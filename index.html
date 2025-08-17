@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -237,6 +237,14 @@
             background-color: #219653;
         }
         
+        .btn-refresh {
+            background-color: var(--gds-color);
+        }
+        
+        .btn-refresh:hover {
+            background-color: #8e44ad;
+        }
+        
         .bank-section {
             margin-bottom: 25px;
             padding: 20px;
@@ -278,9 +286,15 @@
         }
         
         /* أنماط صفحة المقارنة */
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
         .comparison-tabs {
             display: flex;
-            margin-bottom: 20px;
             border-bottom: 1px solid #ddd;
         }
         
@@ -471,6 +485,12 @@
             .content {
                 padding: 20px;
             }
+            
+            .comparison-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
         }
         
         @media (max-width: 768px) {
@@ -492,6 +512,16 @@
             table {
                 display: block;
                 overflow-x: auto;
+            }
+            
+            .add-bank {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .add-bank input[type="text"] {
+                width: 100%;
+                max-width: 100%;
             }
         }
     </style>
@@ -539,12 +569,13 @@
                                     </button>
                                 </div>
                             </div>
-                            <form class="upload-form" action="/upload/admin" method="post" enctype="multipart/form-data">
+                            <form class="upload-form" id="admin-baj-form">
+                                <input type="hidden" name="bank" value="BAJ">
                                 <div class="form-group">
                                     <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                     <div class="file-input-wrapper">
                                         <input type="file" name="file" accept=".xlsx, .xls" required>
-                                        <button type="submit" class="btn-success">
+                                        <button type="button" onclick="uploadFile('admin-baj-form')" class="btn-success">
                                             <i class="fas fa-upload"></i> رفع
                                         </button>
                                     </div>
@@ -565,12 +596,13 @@
                                     </button>
                                 </div>
                             </div>
-                            <form class="upload-form" action="/upload/admin" method="post" enctype="multipart/form-data">
+                            <form class="upload-form" id="admin-bab-form">
+                                <input type="hidden" name="bank" value="BAB">
                                 <div class="form-group">
                                     <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                     <div class="file-input-wrapper">
                                         <input type="file" name="file" accept=".xlsx, .xls" required>
-                                        <button type="submit" class="btn-success">
+                                        <button type="button" onclick="uploadFile('admin-bab-form')" class="btn-success">
                                             <i class="fas fa-upload"></i> رفع
                                         </button>
                                     </div>
@@ -590,12 +622,12 @@
                 <!-- باقي التقارير المشتركة -->
                 <div class="upload-section">
                     <h2><i class="fas fa-ticket-alt"></i> تقرير مبيعات التذاكر - GDS Daily Report</h2>
-                    <form class="upload-form" action="/upload/gds" method="post" enctype="multipart/form-data">
+                    <form class="upload-form" id="gds-form">
                         <div class="form-group">
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required>
-                                <button type="submit" class="btn-success">
+                                <button type="button" onclick="uploadFile('gds-form')" class="btn-success">
                                     <i class="fas fa-upload"></i> رفع
                                 </button>
                             </div>
@@ -605,12 +637,12 @@
                 
                 <div class="upload-section">
                     <h2><i class="fas fa-hotel"></i> تقرير مبيعات اكسبيديا - Expedia Daily Report</h2>
-                    <form class="upload-form" action="/upload/expedia" method="post" enctype="multipart/form-data">
+                    <form class="upload-form" id="expedia-form">
                         <div class="form-group">
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required>
-                                <button type="submit" class="btn-success">
+                                <button type="button" onclick="uploadFile('expedia-form')" class="btn-success">
                                     <i class="fas fa-upload"></i> رفع
                                 </button>
                             </div>
@@ -620,12 +652,12 @@
                 
                 <div class="upload-section">
                     <h2><i class="fas fa-plane"></i> تقرير مبيعات TBO طيران - TBO Flight Daily Report</h2>
-                    <form class="upload-form" action="/upload/tbo-flight" method="post" enctype="multipart/form-data">
+                    <form class="upload-form" id="tbo-flight-form">
                         <div class="form-group">
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required>
-                                <button type="submit" class="btn-success">
+                                <button type="button" onclick="uploadFile('tbo-flight-form')" class="btn-success">
                                     <i class="fas fa-upload"></i> رفع
                                 </button>
                             </div>
@@ -635,12 +667,12 @@
                 
                 <div class="upload-section">
                     <h2><i class="fas fa-bed"></i> تقرير مبيعات TBO فنادق - TBO Hotel Daily Report</h2>
-                    <form class="upload-form" action="/upload/tbo-hotel" method="post" enctype="multipart/form-data">
+                    <form class="upload-form" id="tbo-hotel-form">
                         <div class="form-group">
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required>
-                                <button type="submit" class="btn-success">
+                                <button type="button" onclick="uploadFile('tbo-hotel-form')" class="btn-success">
                                     <i class="fas fa-upload"></i> رفع
                                 </button>
                             </div>
@@ -651,7 +683,12 @@
 
             <!-- صفحة المقارنة -->
             <div id="comparison-page" style="display:none;">
-                <h1><i class="fas fa-exchange-alt"></i> صفحة المقارنة</h1>
+                <div class="comparison-header">
+                    <h1><i class="fas fa-exchange-alt"></i> صفحة المقارنة</h1>
+                    <button onclick="refreshComparison()" class="btn-refresh">
+                        <i class="fas fa-sync-alt"></i> تحديث المقارنة
+                    </button>
+                </div>
                 
                 <div class="comparison-tabs">
                     <div class="comparison-tab active" onclick="showComparisonTab('flights')">
@@ -669,7 +706,7 @@
                         <i class="fas fa-university"></i> BAJ - تقرير المبيعات اليومية
                     </div>
                     
-                    <table>
+                    <table id="flights-table">
                         <thead>
                             <tr>
                                 <th>Booking Ref</th>
@@ -683,40 +720,8 @@
                                 <th>التطابق</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="gds-row">
-                                <td>REF123</td>
-                                <td>2023-10-01</td>
-                                <td>Standard</td>
-                                <td>Emirates</td>
-                                <td>ABC123</td>
-                                <td>2</td>
-                                <td>ABC123</td>
-                                <td>ABC123</td>
-                                <td class="match"><i class="fas fa-check-circle"></i> متطابق</td>
-                            </tr>
-                            <tr class="gds-row">
-                                <td>REF124</td>
-                                <td>2023-10-02</td>
-                                <td>Upgrade</td>
-                                <td>Qatar</td>
-                                <td>XYZ456</td>
-                                <td>1</td>
-                                <td>XYZ789</td>
-                                <td>XYZ456</td>
-                                <td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (GDS)</td>
-                            </tr>
-                            <tr class="tbo-row">
-                                <td>REF125</td>
-                                <td>2023-10-03</td>
-                                <td>Standard</td>
-                                <td>Etihad</td>
-                                <td>DEF456</td>
-                                <td>3</td>
-                                <td>DEF456</td>
-                                <td>DEF789</td>
-                                <td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (TBO)</td>
-                            </tr>
+                        <tbody id="flights-data">
+                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
                         </tbody>
                     </table>
                     
@@ -724,7 +729,7 @@
                         <i class="fas fa-ticket-alt"></i> PNR غير المتطابقة مع GDS
                     </div>
                     
-                    <table>
+                    <table id="gds-mismatch-table">
                         <thead>
                             <tr>
                                 <th>Flight PNR</th>
@@ -733,13 +738,8 @@
                                 <th>الحالة</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="gds-row">
-                                <td>XYZ456</td>
-                                <td>XYZ789</td>
-                                <td>BAJ</td>
-                                <td class="mismatch">غير متطابق</td>
-                            </tr>
+                        <tbody id="gds-mismatch-data">
+                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
                         </tbody>
                     </table>
                     
@@ -747,7 +747,7 @@
                         <i class="fas fa-plane"></i> PNR غير المتطابقة مع TBO
                     </div>
                     
-                    <table>
+                    <table id="tbo-mismatch-table">
                         <thead>
                             <tr>
                                 <th>Flight PNR</th>
@@ -756,13 +756,8 @@
                                 <th>الحالة</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="tbo-row">
-                                <td>DEF456</td>
-                                <td>DEF789</td>
-                                <td>BAJ</td>
-                                <td class="mismatch">غير متطابق</td>
-                            </tr>
+                        <tbody id="tbo-mismatch-data">
+                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
                         </tbody>
                     </table>
                 </div>
@@ -774,7 +769,7 @@
                         <i class="fas fa-university"></i> BAJ - تقرير المبيعات اليومية
                     </div>
                     
-                    <table>
+                    <table id="hotels-table">
                         <thead>
                             <tr>
                                 <th>Booking Ref</th>
@@ -787,37 +782,8 @@
                                 <th>التطابق</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="expedia-row">
-                                <td>HREF123</td>
-                                <td>2023-10-01</td>
-                                <td>Standard</td>
-                                <td>Hilton</td>
-                                <td>HIT123</td>
-                                <td>HIT123</td>
-                                <td>HIT123</td>
-                                <td class="match"><i class="fas fa-check-circle"></i> متطابق</td>
-                            </tr>
-                            <tr class="expedia-row">
-                                <td>HREF124</td>
-                                <td>2023-10-02</td>
-                                <td>Upgrade</td>
-                                <td>Marriott</td>
-                                <td>HIT456</td>
-                                <td>HIT789</td>
-                                <td>HIT456</td>
-                                <td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (Expedia)</td>
-                            </tr>
-                            <tr class="tbo-row">
-                                <td>HREF125</td>
-                                <td>2023-10-03</td>
-                                <td>Standard</td>
-                                <td>Sheraton</td>
-                                <td>HIT789</td>
-                                <td>HIT789</td>
-                                <td>HIT000</td>
-                                <td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (TBO)</td>
-                            </tr>
+                        <tbody id="hotels-data">
+                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
                         </tbody>
                     </table>
                     
@@ -825,7 +791,7 @@
                         <i class="fas fa-hotel"></i> Itineraries غير المتطابقة مع Expedia
                     </div>
                     
-                    <table>
+                    <table id="expedia-mismatch-table">
                         <thead>
                             <tr>
                                 <th>Hotel Itinerary</th>
@@ -834,13 +800,8 @@
                                 <th>الحالة</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="expedia-row">
-                                <td>HIT456</td>
-                                <td>HIT789</td>
-                                <td>BAJ</td>
-                                <td class="mismatch">غير متطابق</td>
-                            </tr>
+                        <tbody id="expedia-mismatch-data">
+                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
                         </tbody>
                     </table>
                     
@@ -848,7 +809,7 @@
                         <i class="fas fa-bed"></i> Confirmations غير المتطابقة مع TBO
                     </div>
                     
-                    <table>
+                    <table id="tbo-hotel-mismatch-table">
                         <thead>
                             <tr>
                                 <th>Hotel Itinerary</th>
@@ -857,13 +818,8 @@
                                 <th>الحالة</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr class="tbo-row">
-                                <td>HIT789</td>
-                                <td>HIT000</td>
-                                <td>BAJ</td>
-                                <td class="mismatch">غير متطابق</td>
-                            </tr>
+                        <tbody id="tbo-hotel-mismatch-data">
+                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
                         </tbody>
                     </table>
                 </div>
@@ -872,6 +828,80 @@
     </div>
 
     <script>
+        // بيانات وهمية للمقارنة (يمكن استبدالها ببيانات حقيقية من السيرفر)
+        const sampleFlightsData = [
+            {
+                bookingRef: "REF123",
+                bookingDate: "2023-10-01",
+                redemptionType: "Standard",
+                supplier: "Emirates",
+                flightPNR: "ABC123",
+                tickets: 2,
+                gdsPNR: "ABC123",
+                tboPNR: "ABC123",
+                match: true
+            },
+            {
+                bookingRef: "REF124",
+                bookingDate: "2023-10-02",
+                redemptionType: "Upgrade",
+                supplier: "Qatar",
+                flightPNR: "XYZ456",
+                tickets: 1,
+                gdsPNR: "XYZ789",
+                tboPNR: "XYZ456",
+                match: false,
+                mismatchType: "GDS"
+            },
+            {
+                bookingRef: "REF125",
+                bookingDate: "2023-10-03",
+                redemptionType: "Standard",
+                supplier: "Etihad",
+                flightPNR: "DEF456",
+                tickets: 3,
+                gdsPNR: "DEF456",
+                tboPNR: "DEF789",
+                match: false,
+                mismatchType: "TBO"
+            }
+        ];
+
+        const sampleHotelsData = [
+            {
+                bookingRef: "HREF123",
+                bookingDate: "2023-10-01",
+                redemptionType: "Standard",
+                supplier: "Hilton",
+                hotelItinerary: "HIT123",
+                expediaItinerary: "HIT123",
+                tboConfirmation: "HIT123",
+                match: true
+            },
+            {
+                bookingRef: "HREF124",
+                bookingDate: "2023-10-02",
+                redemptionType: "Upgrade",
+                supplier: "Marriott",
+                hotelItinerary: "HIT456",
+                expediaItinerary: "HIT789",
+                tboConfirmation: "HIT456",
+                match: false,
+                mismatchType: "Expedia"
+            },
+            {
+                bookingRef: "HREF125",
+                bookingDate: "2023-10-03",
+                redemptionType: "Standard",
+                supplier: "Sheraton",
+                hotelItinerary: "HIT789",
+                expediaItinerary: "HIT789",
+                tboConfirmation: "HIT000",
+                match: false,
+                mismatchType: "TBO"
+            }
+        ];
+
         // عرض الصفحة المطلوبة
         function showPage(pageId) {
             document.getElementById('files-page').style.display = 'none';
@@ -887,6 +917,7 @@
             // إذا كانت صفحة المقارنة، عرض تبويب التذاكر افتراضيًا
             if (pageId === 'comparison-page') {
                 showComparisonTab('flights');
+                loadComparisonData();
             }
         }
 
@@ -903,11 +934,194 @@
             event.target.classList.add('active');
         }
 
+        // رفع الملفات باستخدام Fetch API بدلاً من Forms التقليدية
+        function uploadFile(formId) {
+            const form = document.getElementById(formId);
+            const formData = new FormData(form);
+            const fileInput = form.querySelector('input[type="file"]');
+            
+            if (!fileInput.files.length) {
+                showAlert('الرجاء اختيار ملف أولاً', 'danger');
+                return;
+            }
+            
+            // عرض رسالة تحميل
+            const loadingAlert = showAlert('جاري رفع الملف...', 'warning', true);
+            
+            // هنا يجب استبدال الرابط برابط السيرفر الحقيقي
+            const endpoint = 'https://your-server.com/upload'; // تغيير هذا الرابط
+            
+            fetch(endpoint, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                showAlert('تم رفع الملف بنجاح', 'success');
+                console.log('Upload success:', data);
+                
+                // إذا كانت الصفحة الحالية هي صفحة المقارنة، قم بتحديث البيانات
+                if (document.getElementById('comparison-page').style.display !== 'none') {
+                    loadComparisonData();
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                showAlert('حدث خطأ أثناء رفع الملف: ' + error.message, 'danger');
+            })
+            .finally(() => {
+                // إخفاء رسالة التحميل
+                if (loadingAlert) loadingAlert.remove();
+                // إعادة تعيين حقل الملف
+                fileInput.value = '';
+            });
+        }
+
+        // تحميل بيانات المقارنة
+        function loadComparisonData() {
+            // عرض رسالة تحميل
+            const loadingAlert = showAlert('جاري تحميل بيانات المقارنة...', 'warning', true);
+            
+            // هنا يمكنك جلب البيانات من السيرفر
+            // سنستخدم البيانات الوهمية للتوضيح
+            
+            // تعبئة بيانات التذاكر
+            const flightsTable = document.getElementById('flights-data');
+            flightsTable.innerHTML = '';
+            sampleFlightsData.forEach(item => {
+                const rowClass = item.mismatchType === 'GDS' ? 'gds-row' : 
+                                item.mismatchType === 'TBO' ? 'tbo-row' : '';
+                
+                const matchStatus = item.match ? 
+                    '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
+                    `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
+                
+                flightsTable.innerHTML += `
+                    <tr class="${rowClass}">
+                        <td>${item.bookingRef}</td>
+                        <td>${item.bookingDate}</td>
+                        <td>${item.redemptionType}</td>
+                        <td>${item.supplier}</td>
+                        <td>${item.flightPNR}</td>
+                        <td>${item.tickets}</td>
+                        <td>${item.gdsPNR}</td>
+                        <td>${item.tboPNR}</td>
+                        ${matchStatus}
+                    </tr>
+                `;
+            });
+            
+            // تعبئة بيانات الفنادق
+            const hotelsTable = document.getElementById('hotels-data');
+            hotelsTable.innerHTML = '';
+            sampleHotelsData.forEach(item => {
+                const rowClass = item.mismatchType === 'Expedia' ? 'expedia-row' : 
+                                item.mismatchType === 'TBO' ? 'tbo-row' : '';
+                
+                const matchStatus = item.match ? 
+                    '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
+                    `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
+                
+                hotelsTable.innerHTML += `
+                    <tr class="${rowClass}">
+                        <td>${item.bookingRef}</td>
+                        <td>${item.bookingDate}</td>
+                        <td>${item.redemptionType}</td>
+                        <td>${item.supplier}</td>
+                        <td>${item.hotelItinerary}</td>
+                        <td>${item.expediaItinerary}</td>
+                        <td>${item.tboConfirmation}</td>
+                        ${matchStatus}
+                    </tr>
+                `;
+            });
+            
+            // تعبئة بيانات عدم التطابق
+            fillMismatchData();
+            
+            // إخفاء رسالة التحميل
+            if (loadingAlert) loadingAlert.remove();
+        }
+
+        // تعبئة بيانات عدم التطابق
+        function fillMismatchData() {
+            // GDS غير المتطابقة
+            const gdsMismatch = sampleFlightsData.filter(item => item.mismatchType === 'GDS');
+            const gdsMismatchTable = document.getElementById('gds-mismatch-data');
+            gdsMismatchTable.innerHTML = '';
+            gdsMismatch.forEach(item => {
+                gdsMismatchTable.innerHTML += `
+                    <tr class="gds-row">
+                        <td>${item.flightPNR}</td>
+                        <td>${item.gdsPNR}</td>
+                        <td>BAJ</td>
+                        <td class="mismatch">غير متطابق</td>
+                    </tr>
+                `;
+            });
+            
+            // TBO غير المتطابقة (تذاكر)
+            const tboMismatch = sampleFlightsData.filter(item => item.mismatchType === 'TBO');
+            const tboMismatchTable = document.getElementById('tbo-mismatch-data');
+            tboMismatchTable.innerHTML = '';
+            tboMismatch.forEach(item => {
+                tboMismatchTable.innerHTML += `
+                    <tr class="tbo-row">
+                        <td>${item.flightPNR}</td>
+                        <td>${item.tboPNR}</td>
+                        <td>BAJ</td>
+                        <td class="mismatch">غير متطابق</td>
+                    </tr>
+                `;
+            });
+            
+            // Expedia غير المتطابقة
+            const expediaMismatch = sampleHotelsData.filter(item => item.mismatchType === 'Expedia');
+            const expediaMismatchTable = document.getElementById('expedia-mismatch-data');
+            expediaMismatchTable.innerHTML = '';
+            expediaMismatch.forEach(item => {
+                expediaMismatchTable.innerHTML += `
+                    <tr class="expedia-row">
+                        <td>${item.hotelItinerary}</td>
+                        <td>${item.expediaItinerary}</td>
+                        <td>BAJ</td>
+                        <td class="mismatch">غير متطابق</td>
+                    </tr>
+                `;
+            });
+            
+            // TBO غير المتطابقة (فنادق)
+            const tboHotelMismatch = sampleHotelsData.filter(item => item.mismatchType === 'TBO');
+            const tboHotelMismatchTable = document.getElementById('tbo-hotel-mismatch-data');
+            tboHotelMismatchTable.innerHTML = '';
+            tboHotelMismatch.forEach(item => {
+                tboHotelMismatchTable.innerHTML += `
+                    <tr class="tbo-row">
+                        <td>${item.hotelItinerary}</td>
+                        <td>${item.tboConfirmation}</td>
+                        <td>BAJ</td>
+                        <td class="mismatch">غير متطابق</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // تحديث بيانات المقارنة
+        function refreshComparison() {
+            loadComparisonData();
+            showAlert('تم تحديث بيانات المقارنة بنجاح', 'success');
+        }
+
         // إضافة بنك جديد
         function addNewBank() {
             const bankName = document.getElementById('new-bank-name').value.trim();
             if (!bankName) {
-                alert('الرجاء إدخال اسم البنك');
+                showAlert('الرجاء إدخال اسم البنك', 'danger');
                 return;
             }
             
@@ -927,12 +1141,13 @@
                             </button>
                         </div>
                     </div>
-                    <form class="upload-form" action="/upload/admin" method="post" enctype="multipart/form-data">
+                    <form class="upload-form" id="admin-${newBankId}-form">
+                        <input type="hidden" name="bank" value="${bankName}">
                         <div class="form-group">
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required>
-                                <button type="submit" class="btn-success">
+                                <button type="button" onclick="uploadFile('admin-${newBankId}-form')" class="btn-success">
                                     <i class="fas fa-upload"></i> رفع
                                 </button>
                             </div>
@@ -974,7 +1189,7 @@
         }
 
         // عرض رسالة تنبيه
-        function showAlert(message, type) {
+        function showAlert(message, type, persistent = false) {
             const alertTypes = {
                 'success': { icon: 'check-circle', class: 'alert-success' },
                 'warning': { icon: 'exclamation-triangle', class: 'alert-warning' },
@@ -991,10 +1206,14 @@
             const content = document.querySelector('.content');
             content.insertBefore(alertDiv, content.firstChild);
             
-            // إزالة الرسالة بعد 5 ثواني
-            setTimeout(() => {
-                alertDiv.remove();
-            }, 5000);
+            // إزالة الرسالة بعد 5 ثواني إذا لم تكن ثابتة
+            if (!persistent) {
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 5000);
+            }
+            
+            return alertDiv;
         }
 
         // عرض صفحة الملفات افتراضياً عند التحميل
