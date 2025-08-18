@@ -142,7 +142,7 @@
         .upload-form {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
         
         .form-group {
@@ -182,26 +182,29 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 10px;
         }
         
         .file-input-wrapper input[type="file"] {
             flex: 1;
+            padding: 10px;
         }
         
         button, .btn {
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 15px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
             transition: all 0.3s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
+            height: 40px;
         }
         
         button:hover, .btn:hover {
@@ -212,6 +215,7 @@
         
         button i, .btn i {
             margin-right: 8px;
+            font-size: 14px;
         }
         
         .btn-edit {
@@ -232,6 +236,8 @@
         
         .btn-success {
             background-color: var(--success-color);
+            padding: 8px 12px;
+            font-size: 13px;
         }
         
         .btn-success:hover {
@@ -511,6 +517,10 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            padding: 10px;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 6px;
+            border: 1px dashed var(--secondary-color);
         }
         
         .file-info i {
@@ -519,10 +529,41 @@
         
         .file-name {
             font-weight: 500;
+            flex: 1;
         }
         
         .file-size {
             color: #666;
+            font-size: 13px;
+        }
+        
+        .file-status {
+            margin-left: 10px;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .upload-progress {
+            display: none;
+            margin-top: 10px;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--success-color);
+            width: 0;
+            transition: width 0.3s;
         }
         
         @keyframes spin {
@@ -671,14 +712,21 @@
                                     <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                     <div class="file-input-wrapper">
                                         <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                        <div id="baj-file-info" class="file-info" style="display:none;">
-                                            <i class="fas fa-file-excel"></i>
-                                            <span class="file-name"></span>
-                                            <span class="file-size"></span>
+                                    </div>
+                                    <div id="baj-file-info" class="file-info" style="display:none;">
+                                        <i class="fas fa-file-excel"></i>
+                                        <span class="file-name"></span>
+                                        <span class="file-size"></span>
+                                        <span class="file-status">جاهز للرفع</span>
+                                    </div>
+                                    <div class="upload-progress" id="baj-upload-progress">
+                                        <div>جاري الرفع...</div>
+                                        <div class="progress-bar">
+                                            <div class="progress" id="baj-progress-bar"></div>
                                         </div>
                                     </div>
                                     <button type="button" onclick="uploadFile('admin-baj-form')" class="btn-success">
-                                        <i class="fas fa-upload"></i> رفع
+                                        <i class="fas fa-upload"></i> رفع الملف
                                     </button>
                                 </div>
                             </form>
@@ -703,14 +751,21 @@
                                     <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                     <div class="file-input-wrapper">
                                         <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                        <div id="bab-file-info" class="file-info" style="display:none;">
-                                            <i class="fas fa-file-excel"></i>
-                                            <span class="file-name"></span>
-                                            <span class="file-size"></span>
+                                    </div>
+                                    <div id="bab-file-info" class="file-info" style="display:none;">
+                                        <i class="fas fa-file-excel"></i>
+                                        <span class="file-name"></span>
+                                        <span class="file-size"></span>
+                                        <span class="file-status">جاهز للرفع</span>
+                                    </div>
+                                    <div class="upload-progress" id="bab-upload-progress">
+                                        <div>جاري الرفع...</div>
+                                        <div class="progress-bar">
+                                            <div class="progress" id="bab-progress-bar"></div>
                                         </div>
                                     </div>
                                     <button type="button" onclick="uploadFile('admin-bab-form')" class="btn-success">
-                                        <i class="fas fa-upload"></i> رفع
+                                        <i class="fas fa-upload"></i> رفع الملف
                                     </button>
                                 </div>
                             </form>
@@ -733,14 +788,21 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <div id="gds-file-info" class="file-info" style="display:none;">
-                                    <i class="fas fa-file-excel"></i>
-                                    <span class="file-name"></span>
-                                    <span class="file-size"></span>
+                            </div>
+                            <div id="gds-file-info" class="file-info" style="display:none;">
+                                <i class="fas fa-file-excel"></i>
+                                <span class="file-name"></span>
+                                <span class="file-size"></span>
+                                <span class="file-status">جاهز للرفع</span>
+                            </div>
+                            <div class="upload-progress" id="gds-upload-progress">
+                                <div>جاري الرفع...</div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="gds-progress-bar"></div>
                                 </div>
                             </div>
                             <button type="button" onclick="uploadFile('gds-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع
+                                <i class="fas fa-upload"></i> رفع الملف
                             </button>
                         </div>
                     </form>
@@ -753,14 +815,21 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <div id="expedia-file-info" class="file-info" style="display:none;">
-                                    <i class="fas fa-file-excel"></i>
-                                    <span class="file-name"></span>
-                                    <span class="file-size"></span>
+                            </div>
+                            <div id="expedia-file-info" class="file-info" style="display:none;">
+                                <i class="fas fa-file-excel"></i>
+                                <span class="file-name"></span>
+                                <span class="file-size"></span>
+                                <span class="file-status">جاهز للرفع</span>
+                            </div>
+                            <div class="upload-progress" id="expedia-upload-progress">
+                                <div>جاري الرفع...</div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="expedia-progress-bar"></div>
                                 </div>
                             </div>
                             <button type="button" onclick="uploadFile('expedia-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع
+                                <i class="fas fa-upload"></i> رفع الملف
                             </button>
                         </div>
                     </form>
@@ -773,14 +842,21 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <div id="tbo-flight-file-info" class="file-info" style="display:none;">
-                                    <i class="fas fa-file-excel"></i>
-                                    <span class="file-name"></span>
-                                    <span class="file-size"></span>
+                            </div>
+                            <div id="tbo-flight-file-info" class="file-info" style="display:none;">
+                                <i class="fas fa-file-excel"></i>
+                                <span class="file-name"></span>
+                                <span class="file-size"></span>
+                                <span class="file-status">جاهز للرفع</span>
+                            </div>
+                            <div class="upload-progress" id="tbo-flight-upload-progress">
+                                <div>جاري الرفع...</div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="tbo-flight-progress-bar"></div>
                                 </div>
                             </div>
                             <button type="button" onclick="uploadFile('tbo-flight-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع
+                                <i class="fas fa-upload"></i> رفع الملف
                             </button>
                         </div>
                     </form>
@@ -793,14 +869,21 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <div id="tbo-hotel-file-info" class="file-info" style="display:none;">
-                                    <i class="fas fa-file-excel"></i>
-                                    <span class="file-name"></span>
-                                    <span class="file-size"></span>
+                            </div>
+                            <div id="tbo-hotel-file-info" class="file-info" style="display:none;">
+                                <i class="fas fa-file-excel"></i>
+                                <span class="file-name"></span>
+                                <span class="file-size"></span>
+                                <span class="file-status">جاهز للرفع</span>
+                            </div>
+                            <div class="upload-progress" id="tbo-hotel-upload-progress">
+                                <div>جاري الرفع...</div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="tbo-hotel-progress-bar"></div>
                                 </div>
                             </div>
                             <button type="button" onclick="uploadFile('tbo-hotel-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع
+                                <i class="fas fa-upload"></i> رفع الملف
                             </button>
                         </div>
                     </form>
@@ -1026,9 +1109,12 @@
                 const fileInfoDiv = document.getElementById(`${formId}-file-info`);
                 const fileNameSpan = fileInfoDiv.querySelector('.file-name');
                 const fileSizeSpan = fileInfoDiv.querySelector('.file-size');
+                const fileStatusSpan = fileInfoDiv.querySelector('.file-status');
                 
                 fileNameSpan.textContent = file.name;
                 fileSizeSpan.textContent = formatFileSize(file.size);
+                fileStatusSpan.textContent = 'جاهز للرفع';
+                fileStatusSpan.style.backgroundColor = '#27ae60';
                 fileInfoDiv.style.display = 'flex';
             }
         }
@@ -1088,6 +1174,10 @@
             const formData = new FormData(form);
             const fileInput = form.querySelector('input[type="file"]');
             const submitButton = form.querySelector('button[type="button"]');
+            const fileInfoDiv = document.getElementById(`${formId}-file-info`);
+            const fileStatusSpan = fileInfoDiv.querySelector('.file-status');
+            const uploadProgressDiv = document.getElementById(`${formId}-upload-progress`);
+            const progressBar = document.getElementById(`${formId}-progress-bar`);
             
             if (!fileInput.files.length) {
                 showAlert('الرجاء اختيار ملف أولاً', 'danger');
@@ -1098,38 +1188,63 @@
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
             
-            // هنا يجب استبدال الرابط برابط السيرفر الحقيقي
-            const endpoint = 'https://your-server.com/upload'; // تغيير هذا الرابط
+            // إظهار شريط التقدم
+            uploadProgressDiv.style.display = 'block';
+            progressBar.style.width = '0%';
             
-            // محاكاة الرفع (لأغراض العرض فقط)
-            setTimeout(() => {
-                // إنشاء بيانات وهمية بناءً على نوع الملف
-                if (formId.includes('admin')) {
-                    // بيانات بنك
-                    const bankName = formData.get('bank');
-                    generateSampleBankData(bankName);
-                } else if (formId.includes('gds')) {
-                    generateSampleGDSData();
-                } else if (formId.includes('expedia')) {
-                    generateSampleExpediaData();
-                } else if (formId.includes('tbo-flight')) {
-                    generateSampleTBOFlightData();
-                } else if (formId.includes('tbo-hotel')) {
-                    generateSampleTBOHotelData();
+            // تحديث حالة الملف
+            fileStatusSpan.textContent = 'جاري الرفع...';
+            fileStatusSpan.style.backgroundColor = '#f39c12';
+            
+            // محاكاة عملية الرفع مع شريط التقدم
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = `${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    uploadComplete(formId);
                 }
-                
-                showAlert('تم رفع الملف بنجاح', 'success');
-                
-                // إعادة تمكين الزر
-                submitButton.disabled = false;
-                submitButton.innerHTML = '<i class="fas fa-upload"></i> رفع';
-                
-                // إعادة تعيين حقل الملف
-                fileInput.value = '';
-                const fileInfoDiv = document.getElementById(`${formId}-file-info`);
-                fileInfoDiv.style.display = 'none';
-                
-            }, 1500);
+            }, 100);
+        }
+
+        // اكتمال عملية الرفع
+        function uploadComplete(formId) {
+            const form = document.getElementById(formId);
+            const fileInput = form.querySelector('input[type="file"]');
+            const submitButton = form.querySelector('button[type="button"]');
+            const fileInfoDiv = document.getElementById(`${formId}-file-info`);
+            const fileStatusSpan = fileInfoDiv.querySelector('.file-status');
+            const uploadProgressDiv = document.getElementById(`${formId}-upload-progress`);
+            
+            // إعادة تمكين الزر
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fas fa-upload"></i> رفع الملف';
+            
+            // إخفاء شريط التقدم
+            uploadProgressDiv.style.display = 'none';
+            
+            // تحديث حالة الملف
+            fileStatusSpan.textContent = 'تم الرفع بنجاح';
+            fileStatusSpan.style.backgroundColor = '#27ae60';
+            
+            // إنشاء بيانات وهمية بناءً على نوع الملف
+            if (formId.includes('admin')) {
+                // بيانات بنك
+                const bankName = form.querySelector('input[name="bank"]').value;
+                generateSampleBankData(bankName);
+            } else if (formId.includes('gds')) {
+                generateSampleGDSData();
+            } else if (formId.includes('expedia')) {
+                generateSampleExpediaData();
+            } else if (formId.includes('tbo-flight')) {
+                generateSampleTBOFlightData();
+            } else if (formId.includes('tbo-hotel')) {
+                generateSampleTBOHotelData();
+            }
+            
+            showAlert('تم رفع الملف بنجاح', 'success');
         }
 
         // توليد بيانات بنك وهمية
@@ -1625,14 +1740,21 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <div id="admin-${newBankId}-form-file-info" class="file-info" style="display:none;">
-                                    <i class="fas fa-file-excel"></i>
-                                    <span class="file-name"></span>
-                                    <span class="file-size"></span>
+                            </div>
+                            <div id="admin-${newBankId}-form-file-info" class="file-info" style="display:none;">
+                                <i class="fas fa-file-excel"></i>
+                                <span class="file-name"></span>
+                                <span class="file-size"></span>
+                                <span class="file-status">جاهز للرفع</span>
+                            </div>
+                            <div class="upload-progress" id="admin-${newBankId}-form-upload-progress">
+                                <div>جاري الرفع...</div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="admin-${newBankId}-form-progress-bar"></div>
                                 </div>
                             </div>
                             <button type="button" onclick="uploadFile('admin-${newBankId}-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع
+                                <i class="fas fa-upload"></i> رفع الملف
                             </button>
                         </div>
                     </form>
