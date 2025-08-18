@@ -813,7 +813,7 @@
                                         <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                         <div class="file-input-wrapper">
                                             <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                            <button type="button" onclick="uploadFile('admin-baj-form')" class="btn-success">
+                                            <button type="submit" class="btn-success">
                                                 <i class="fas fa-upload"></i> رفع
                                             </button>
                                         </div>
@@ -855,7 +855,7 @@
                                         <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                         <div class="file-input-wrapper">
                                             <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                            <button type="button" onclick="uploadFile('admin-bab-form')" class="btn-success">
+                                            <button type="submit" class="btn-success">
                                                 <i class="fas fa-upload"></i> رفع
                                             </button>
                                         </div>
@@ -895,7 +895,7 @@
                                 <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                 <div class="file-input-wrapper">
                                     <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    <button type="button" onclick="uploadFile('gds-form')" class="btn-success">
+                                    <button type="submit" class="btn-success">
                                         <i class="fas fa-upload"></i> رفع
                                     </button>
                                 </div>
@@ -925,7 +925,7 @@
                                 <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                 <div class="file-input-wrapper">
                                     <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    <button type="button" onclick="uploadFile('expedia-form')" class="btn-success">
+                                    <button type="submit" class="btn-success">
                                         <i class="fas fa-upload"></i> رفع
                                     </button>
                                 </div>
@@ -955,7 +955,7 @@
                                 <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                 <div class="file-input-wrapper">
                                     <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    <button type="button" onclick="uploadFile('tbo-flight-form')" class="btn-success">
+                                    <button type="submit" class="btn-success">
                                         <i class="fas fa-upload"></i> رفع
                                     </button>
                                 </div>
@@ -985,7 +985,7 @@
                                 <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                                 <div class="file-input-wrapper">
                                     <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    <button type="button" onclick="uploadFile('tbo-hotel-form')" class="btn-success">
+                                    <button type="submit" class="btn-success">
                                         <i class="fas fa-upload"></i> رفع
                                     </button>
                                 </div>
@@ -1013,14 +1013,14 @@
                 <div id="flights-comparison" class="comparison-content">
                     <div class="date-range">
                         <div class="date-range-group">
-                            <label for="from-date">من تاريخ:</label>
-                            <input type="date" id="from-date">
+                            <label for="flights-from-date">من تاريخ:</label>
+                            <input type="date" id="flights-from-date">
                         </div>
                         <div class="date-range-group">
-                            <label for="to-date">إلى تاريخ:</label>
-                            <input type="date" id="to-date">
+                            <label for="flights-to-date">إلى تاريخ:</label>
+                            <input type="date" id="flights-to-date">
                         </div>
-                        <button onclick="filterByDate()" class="btn">
+                        <button onclick="filterFlightsByDate()" class="btn">
                             <i class="fas fa-filter"></i> تصفية
                         </button>
                     </div>
@@ -1090,14 +1090,14 @@
                 <div id="hotels-comparison" class="comparison-content">
                     <div class="date-range">
                         <div class="date-range-group">
-                            <label for="from-date">من تاريخ:</label>
-                            <input type="date" id="from-date">
+                            <label for="hotels-from-date">من تاريخ:</label>
+                            <input type="date" id="hotels-from-date">
                         </div>
                         <div class="date-range-group">
-                            <label for="to-date">إلى تاريخ:</label>
-                            <input type="date" id="to-date">
+                            <label for="hotels-to-date">إلى تاريخ:</label>
+                            <input type="date" id="hotels-to-date">
                         </div>
-                        <button onclick="filterByDate()" class="btn">
+                        <button onclick="filterHotelsByDate()" class="btn">
                             <i class="fas fa-filter"></i> تصفية
                         </button>
                     </div>
@@ -1376,18 +1376,28 @@
             });
         }
 
-        // رفع الملفات باستخدام Fetch API
+        // معالجة إرسال النماذج
+        function setupFormHandlers() {
+            document.querySelectorAll('.upload-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formId = this.id;
+                    uploadFile(formId);
+                });
+            });
+        }
+
+        // رفع الملفات
         function uploadFile(formId) {
             const form = document.getElementById(formId);
-            const formData = new FormData(form);
             const fileInput = form.querySelector('input[type="file"]');
-            const submitButton = form.querySelector('button[type="button"]');
+            const submitButton = form.querySelector('button[type="submit"]');
             const fileInfoDiv = document.getElementById(`${formId}-file-info`);
-            const fileStatusSpan = fileInfoDiv.querySelector('.file-status');
+            const fileStatusSpan = fileInfoDiv?.querySelector('.file-status');
             const uploadProgressDiv = document.getElementById(`${formId}-upload-progress`);
             const progressBar = document.getElementById(`${formId}-progress-bar`);
             
-            if (!fileInput.files.length) {
+            if (!fileInput.files || fileInput.files.length === 0) {
                 showAlert('الرجاء اختيار ملف أولاً', 'danger');
                 return;
             }
@@ -1397,18 +1407,20 @@
             submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الرفع...';
             
             // إظهار شريط التقدم
-            uploadProgressDiv.style.display = 'block';
-            progressBar.style.width = '0%';
+            if (uploadProgressDiv) uploadProgressDiv.style.display = 'block';
+            if (progressBar) progressBar.style.width = '0%';
             
             // تحديث حالة الملف
-            fileStatusSpan.textContent = 'جاري الرفع...';
-            fileStatusSpan.style.backgroundColor = '#f39c12';
+            if (fileStatusSpan) {
+                fileStatusSpan.textContent = 'جاري الرفع...';
+                fileStatusSpan.style.backgroundColor = '#f39c12';
+            }
             
             // محاكاة عملية الرفع مع شريط التقدم
             let progress = 0;
             const progressInterval = setInterval(() => {
                 progress += 5;
-                progressBar.style.width = `${progress}%`;
+                if (progressBar) progressBar.style.width = `${progress}%`;
                 
                 if (progress >= 100) {
                     clearInterval(progressInterval);
@@ -1421,9 +1433,9 @@
         function uploadComplete(formId, file) {
             const form = document.getElementById(formId);
             const fileInput = form.querySelector('input[type="file"]');
-            const submitButton = form.querySelector('button[type="button"]');
+            const submitButton = form.querySelector('button[type="submit"]');
             const fileInfoDiv = document.getElementById(`${formId}-file-info`);
-            const fileStatusSpan = fileInfoDiv.querySelector('.file-status');
+            const fileStatusSpan = fileInfoDiv?.querySelector('.file-status');
             const uploadProgressDiv = document.getElementById(`${formId}-upload-progress`);
             const uploadedFilesDiv = document.getElementById(`${formId}-uploaded-files`);
             
@@ -1432,11 +1444,13 @@
             submitButton.innerHTML = '<i class="fas fa-upload"></i> رفع';
             
             // إخفاء شريط التقدم
-            uploadProgressDiv.style.display = 'none';
+            if (uploadProgressDiv) uploadProgressDiv.style.display = 'none';
             
             // تحديث حالة الملف
-            fileStatusSpan.textContent = 'تم الرفع بنجاح';
-            fileStatusSpan.style.backgroundColor = '#27ae60';
+            if (fileStatusSpan) {
+                fileStatusSpan.textContent = 'تم الرفع بنجاح';
+                fileStatusSpan.style.backgroundColor = '#27ae60';
+            }
             
             // إضافة الملف إلى قائمة الملفات المرفوعة
             const now = new Date();
@@ -1476,13 +1490,15 @@
             // إعادة تعيين حقل الرفع
             fileInput.value = '';
             setTimeout(() => {
-                fileInfoDiv.style.display = 'none';
+                if (fileInfoDiv) fileInfoDiv.style.display = 'none';
             }, 2000);
         }
 
         // عرض الملفات المرفوعة
         function renderUploadedFiles(formId) {
             const uploadedFilesDiv = document.getElementById(`${formId}-uploaded-files`);
+            if (!uploadedFilesDiv) return;
+            
             uploadedFilesDiv.innerHTML = '';
             
             if (uploadedFiles[formId] && uploadedFiles[formId].length > 0) {
@@ -1607,52 +1623,56 @@
         function loadComparisonData() {
             // تعبئة بيانات التذاكر
             const flightsTable = document.getElementById('flights-data');
-            flightsTable.innerHTML = '';
-            sampleFlightsData.forEach(item => {
-                const rowClass = !item.match ? (item.mismatchType === 'GDS' ? 'gds-row' : 'tbo-row') : '';
-                
-                const matchStatus = item.match ? 
-                    '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
-                    `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
-                
-                flightsTable.innerHTML += `
-                    <tr class="${rowClass}">
-                        <td>${item.bookingRef}</td>
-                        <td>${item.bookingDate}</td>
-                        <td>${item.redemptionType}</td>
-                        <td>${item.supplier}</td>
-                        <td>${item.flightPNR}</td>
-                        <td>${item.tickets}</td>
-                        <td>${item.gdsPNR}</td>
-                        <td>${item.tboPNR}</td>
-                        ${matchStatus}
-                    </tr>
-                `;
-            });
+            if (flightsTable) {
+                flightsTable.innerHTML = '';
+                sampleFlightsData.forEach(item => {
+                    const rowClass = !item.match ? (item.mismatchType === 'GDS' ? 'gds-row' : 'tbo-row') : '';
+                    
+                    const matchStatus = item.match ? 
+                        '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
+                        `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
+                    
+                    flightsTable.innerHTML += `
+                        <tr class="${rowClass}">
+                            <td>${item.bookingRef}</td>
+                            <td>${item.bookingDate}</td>
+                            <td>${item.redemptionType}</td>
+                            <td>${item.supplier}</td>
+                            <td>${item.flightPNR}</td>
+                            <td>${item.tickets}</td>
+                            <td>${item.gdsPNR}</td>
+                            <td>${item.tboPNR}</td>
+                            ${matchStatus}
+                        </tr>
+                    `;
+                });
+            }
             
             // تعبئة بيانات الفنادق
             const hotelsTable = document.getElementById('hotels-data');
-            hotelsTable.innerHTML = '';
-            sampleHotelsData.forEach(item => {
-                const rowClass = !item.match ? (item.mismatchType === 'Expedia' ? 'expedia-row' : 'tbo-row') : '';
-                
-                const matchStatus = item.match ? 
-                    '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
-                    `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
-                
-                hotelsTable.innerHTML += `
-                    <tr class="${rowClass}">
-                        <td>${item.bookingRef}</td>
-                        <td>${item.bookingDate}</td>
-                        <td>${item.redemptionType}</td>
-                        <td>${item.supplier}</td>
-                        <td>${item.hotelItinerary}</td>
-                        <td>${item.expediaItinerary}</td>
-                        <td>${item.tboConfirmation}</td>
-                        ${matchStatus}
-                    </tr>
-                `;
-            });
+            if (hotelsTable) {
+                hotelsTable.innerHTML = '';
+                sampleHotelsData.forEach(item => {
+                    const rowClass = !item.match ? (item.mismatchType === 'Expedia' ? 'expedia-row' : 'tbo-row') : '';
+                    
+                    const matchStatus = item.match ? 
+                        '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
+                        `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
+                    
+                    hotelsTable.innerHTML += `
+                        <tr class="${rowClass}">
+                            <td>${item.bookingRef}</td>
+                            <td>${item.bookingDate}</td>
+                            <td>${item.redemptionType}</td>
+                            <td>${item.supplier}</td>
+                            <td>${item.hotelItinerary}</td>
+                            <td>${item.expediaItinerary}</td>
+                            <td>${item.tboConfirmation}</td>
+                            ${matchStatus}
+                        </tr>
+                    `;
+                });
+            }
             
             // تعبئة بيانات عدم التطابق
             fillMismatchData();
@@ -1663,62 +1683,70 @@
             // GDS غير المتطابقة
             const gdsMismatch = sampleFlightsData.filter(item => !item.match && item.mismatchType === 'GDS');
             const gdsMismatchTable = document.getElementById('gds-mismatch-data');
-            gdsMismatchTable.innerHTML = '';
-            gdsMismatch.forEach(item => {
-                gdsMismatchTable.innerHTML += `
-                    <tr class="gds-row">
-                        <td>${item.flightPNR}</td>
-                        <td>${item.gdsPNR}</td>
-                        <td>${item.bank || 'BAJ'}</td>
-                        <td class="mismatch">غير متطابق</td>
-                    </tr>
-                `;
-            });
+            if (gdsMismatchTable) {
+                gdsMismatchTable.innerHTML = '';
+                gdsMismatch.forEach(item => {
+                    gdsMismatchTable.innerHTML += `
+                        <tr class="gds-row">
+                            <td>${item.flightPNR}</td>
+                            <td>${item.gdsPNR}</td>
+                            <td>${item.bank || 'BAJ'}</td>
+                            <td class="mismatch">غير متطابق</td>
+                        </tr>
+                    `;
+                });
+            }
             
             // TBO غير المتطابقة (تذاكر)
             const tboMismatch = sampleFlightsData.filter(item => !item.match && item.mismatchType === 'TBO');
             const tboMismatchTable = document.getElementById('tbo-mismatch-data');
-            tboMismatchTable.innerHTML = '';
-            tboMismatch.forEach(item => {
-                tboMismatchTable.innerHTML += `
-                    <tr class="tbo-row">
-                        <td>${item.flightPNR}</td>
-                        <td>${item.tboPNR}</td>
-                        <td>${item.bank || 'BAJ'}</td>
-                        <td class="mismatch">غير متطابق</td>
-                    </tr>
-                `;
-            });
+            if (tboMismatchTable) {
+                tboMismatchTable.innerHTML = '';
+                tboMismatch.forEach(item => {
+                    tboMismatchTable.innerHTML += `
+                        <tr class="tbo-row">
+                            <td>${item.flightPNR}</td>
+                            <td>${item.tboPNR}</td>
+                            <td>${item.bank || 'BAJ'}</td>
+                            <td class="mismatch">غير متطابق</td>
+                        </tr>
+                    `;
+                });
+            }
             
             // Expedia غير المتطابقة
             const expediaMismatch = sampleHotelsData.filter(item => !item.match && item.mismatchType === 'Expedia');
             const expediaMismatchTable = document.getElementById('expedia-mismatch-data');
-            expediaMismatchTable.innerHTML = '';
-            expediaMismatch.forEach(item => {
-                expediaMismatchTable.innerHTML += `
-                    <tr class="expedia-row">
-                        <td>${item.hotelItinerary}</td>
-                        <td>${item.expediaItinerary}</td>
-                        <td>${item.bank || 'BAJ'}</td>
-                        <td class="mismatch">غير متطابق</td>
-                    </tr>
-                `;
-            });
+            if (expediaMismatchTable) {
+                expediaMismatchTable.innerHTML = '';
+                expediaMismatch.forEach(item => {
+                    expediaMismatchTable.innerHTML += `
+                        <tr class="expedia-row">
+                            <td>${item.hotelItinerary}</td>
+                            <td>${item.expediaItinerary}</td>
+                            <td>${item.bank || 'BAJ'}</td>
+                            <td class="mismatch">غير متطابق</td>
+                        </tr>
+                    `;
+                });
+            }
             
             // TBO غير المتطابقة (فنادق)
             const tboHotelMismatch = sampleHotelsData.filter(item => !item.match && item.mismatchType === 'TBO');
             const tboHotelMismatchTable = document.getElementById('tbo-hotel-mismatch-data');
-            tboHotelMismatchTable.innerHTML = '';
-            tboHotelMismatch.forEach(item => {
-                tboHotelMismatchTable.innerHTML += `
-                    <tr class="tbo-row">
-                        <td>${item.hotelItinerary}</td>
-                        <td>${item.tboConfirmation}</td>
-                        <td>${item.bank || 'BAJ'}</td>
-                        <td class="mismatch">غير متطابق</td>
-                    </tr>
-                `;
-            });
+            if (tboHotelMismatchTable) {
+                tboHotelMismatchTable.innerHTML = '';
+                tboHotelMismatch.forEach(item => {
+                    tboHotelMismatchTable.innerHTML += `
+                        <tr class="tbo-row">
+                            <td>${item.hotelItinerary}</td>
+                            <td>${item.tboConfirmation}</td>
+                            <td>${item.bank || 'BAJ'}</td>
+                            <td class="mismatch">غير متطابق</td>
+                        </tr>
+                    `;
+                });
+            }
         }
 
         // تحديث بيانات المقارنة
@@ -1737,10 +1765,10 @@
             }
         }
 
-        // تصفية البيانات حسب النطاق الزمني
-        function filterByDate() {
-            const fromDate = document.getElementById('from-date').value;
-            const toDate = document.getElementById('to-date').value;
+        // تصفية بيانات التذاكر حسب النطاق الزمني
+        function filterFlightsByDate() {
+            const fromDate = document.getElementById('flights-from-date').value;
+            const toDate = document.getElementById('flights-to-date').value;
             
             if (!fromDate || !toDate) {
                 showAlert('الرجاء تحديد تاريخ البداية والنهاية', 'danger');
@@ -1755,6 +1783,51 @@
                 return itemDate >= from && itemDate <= to;
             });
             
+            if (filteredFlights.length === 0) {
+                showAlert('لا توجد بيانات في النطاق الزمني المحدد', 'warning');
+                return;
+            }
+            
+            // عرض البيانات المصفاة
+            const flightsTable = document.getElementById('flights-data');
+            if (flightsTable) {
+                flightsTable.innerHTML = '';
+                filteredFlights.forEach(item => {
+                    const rowClass = !item.match ? (item.mismatchType === 'GDS' ? 'gds-row' : 'tbo-row') : '';
+                    
+                    const matchStatus = item.match ? 
+                        '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
+                        `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
+                    
+                    flightsTable.innerHTML += `
+                        <tr class="${rowClass}">
+                            <td>${item.bookingRef}</td>
+                            <td>${item.bookingDate}</td>
+                            <td>${item.redemptionType}</td>
+                            <td>${item.supplier}</td>
+                            <td>${item.flightPNR}</td>
+                            <td>${item.tickets}</td>
+                            <td>${item.gdsPNR}</td>
+                            <td>${item.tboPNR}</td>
+                            ${matchStatus}
+                        </tr>
+                    `;
+                });
+            }
+            
+            showAlert(`تم تصفية بيانات التذاكر من ${fromDate} إلى ${toDate}`, 'success');
+        }
+
+        // تصفية بيانات الفنادق حسب النطاق الزمني
+        function filterHotelsByDate() {
+            const fromDate = document.getElementById('hotels-from-date').value;
+            const toDate = document.getElementById('hotels-to-date').value;
+            
+            if (!fromDate || !toDate) {
+                showAlert('الرجاء تحديد تاريخ البداية والنهاية', 'danger');
+                return;
+            }
+            
             // تصفية بيانات الفنادق
             const filteredHotels = sampleHotelsData.filter(item => {
                 const itemDate = new Date(item.bookingDate);
@@ -1763,60 +1836,38 @@
                 return itemDate >= from && itemDate <= to;
             });
             
-            if (filteredFlights.length === 0 && filteredHotels.length === 0) {
+            if (filteredHotels.length === 0) {
                 showAlert('لا توجد بيانات في النطاق الزمني المحدد', 'warning');
                 return;
             }
             
             // عرض البيانات المصفاة
-            const flightsTable = document.getElementById('flights-data');
-            flightsTable.innerHTML = '';
-            filteredFlights.forEach(item => {
-                const rowClass = !item.match ? (item.mismatchType === 'GDS' ? 'gds-row' : 'tbo-row') : '';
-                
-                const matchStatus = item.match ? 
-                    '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
-                    `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
-                
-                flightsTable.innerHTML += `
-                    <tr class="${rowClass}">
-                        <td>${item.bookingRef}</td>
-                        <td>${item.bookingDate}</td>
-                        <td>${item.redemptionType}</td>
-                        <td>${item.supplier}</td>
-                        <td>${item.flightPNR}</td>
-                        <td>${item.tickets}</td>
-                        <td>${item.gdsPNR}</td>
-                        <td>${item.tboPNR}</td>
-                        ${matchStatus}
-                    </tr>
-                `;
-            });
-            
             const hotelsTable = document.getElementById('hotels-data');
-            hotelsTable.innerHTML = '';
-            filteredHotels.forEach(item => {
-                const rowClass = !item.match ? (item.mismatchType === 'Expedia' ? 'expedia-row' : 'tbo-row') : '';
-                
-                const matchStatus = item.match ? 
-                    '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
-                    `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
-                
-                hotelsTable.innerHTML += `
-                    <tr class="${rowClass}">
-                        <td>${item.bookingRef}</td>
-                        <td>${item.bookingDate}</td>
-                        <td>${item.redemptionType}</td>
-                        <td>${item.supplier}</td>
-                        <td>${item.hotelItinerary}</td>
-                        <td>${item.expediaItinerary}</td>
-                        <td>${item.tboConfirmation}</td>
-                        ${matchStatus}
-                    </tr>
-                `;
-            });
+            if (hotelsTable) {
+                hotelsTable.innerHTML = '';
+                filteredHotels.forEach(item => {
+                    const rowClass = !item.match ? (item.mismatchType === 'Expedia' ? 'expedia-row' : 'tbo-row') : '';
+                    
+                    const matchStatus = item.match ? 
+                        '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
+                        `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
+                    
+                    hotelsTable.innerHTML += `
+                        <tr class="${rowClass}">
+                            <td>${item.bookingRef}</td>
+                            <td>${item.bookingDate}</td>
+                            <td>${item.redemptionType}</td>
+                            <td>${item.supplier}</td>
+                            <td>${item.hotelItinerary}</td>
+                            <td>${item.expediaItinerary}</td>
+                            <td>${item.tboConfirmation}</td>
+                            ${matchStatus}
+                        </tr>
+                    `;
+                });
+            }
             
-            showAlert(`تم تصفية البيانات من ${fromDate} إلى ${toDate}`, 'success');
+            showAlert(`تم تصفية بيانات الفنادق من ${fromDate} إلى ${toDate}`, 'success');
         }
 
         // حفظ البيانات إلى قاعدة البيانات
@@ -1868,6 +1919,8 @@
         // تحميل بيانات قاعدة البيانات
         function loadDatabase() {
             const databaseTable = document.getElementById('database-data');
+            if (!databaseTable) return;
+            
             databaseTable.innerHTML = '';
             
             if (database.length === 0) {
@@ -1936,13 +1989,15 @@
             }
             
             const results = database.filter(item => 
-                item.bookingRef.toLowerCase().includes(query) ||
-                item.bank.toLowerCase().includes(query) ||
-                item.type.toLowerCase().includes(query) ||
-                item.status.toLowerCase().includes(query)
+                (item.bookingRef && item.bookingRef.toLowerCase().includes(query)) ||
+                (item.bank && item.bank.toLowerCase().includes(query)) ||
+                (item.type && item.type.toLowerCase().includes(query)) ||
+                (item.status && item.status.toLowerCase().includes(query))
             );
             
             const databaseTable = document.getElementById('database-data');
+            if (!databaseTable) return;
+            
             databaseTable.innerHTML = '';
             
             if (results.length === 0) {
@@ -2030,7 +2085,7 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <button type="button" onclick="uploadFile('admin-${newBankId}-form')" class="btn-success">
+                                <button type="submit" class="btn-success">
                                     <i class="fas fa-upload"></i> رفع
                                 </button>
                             </div>
@@ -2059,6 +2114,12 @@
             
             // إضافة مكان لتخزين ملفات البنك الجديد
             uploadedFiles[`admin-${newBankId}-form`] = [];
+            
+            // إعداد معالج الإرسال للنموذج الجديد
+            document.getElementById(`admin-${newBankId}-form`).addEventListener('submit', function(e) {
+                e.preventDefault();
+                uploadFile(`admin-${newBankId}-form`);
+            });
             
             // عرض رسالة نجاح
             showAlert('تم إضافة البنك بنجاح', 'success');
@@ -2145,12 +2206,17 @@
 
         // عرض صفحة المقارنة افتراضياً عند التحميل
         window.onload = function() {
+            // إعداد معالجات النماذج
+            setupFormHandlers();
+            
             showPage('comparison-page');
             
             // تعيين التاريخ الافتراضي (اليوم)
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('from-date').value = today;
-            document.getElementById('to-date').value = today;
+            document.getElementById('flights-from-date').value = today;
+            document.getElementById('flights-to-date').value = today;
+            document.getElementById('hotels-from-date').value = today;
+            document.getElementById('hotels-to-date').value = today;
             
             // تحميل أي بيانات محفوظة في localStorage
             loadFromLocalStorage();
@@ -2158,8 +2224,11 @@
             // عرض البيانات الأولية
             loadComparisonData();
             renderUploadedFiles('admin-baj-form');
+            renderUploadedFiles('admin-bab-form');
             renderUploadedFiles('gds-form');
             renderUploadedFiles('expedia-form');
+            renderUploadedFiles('tbo-flight-form');
+            renderUploadedFiles('tbo-hotel-form');
         };
         
         // تحميل البيانات من localStorage
@@ -2212,7 +2281,7 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <button type="button" onclick="uploadFile('admin-${newBankId}-form')" class="btn-success">
+                                <button type="submit" class="btn-success">
                                     <i class="fas fa-upload"></i> رفع
                                 </button>
                             </div>
@@ -2237,6 +2306,12 @@
             `;
             
             banksContainer.insertAdjacentHTML('beforeend', bankHTML);
+            
+            // إعداد معالج الإرسال للنموذج الجديد
+            document.getElementById(`admin-${newBankId}-form`).addEventListener('submit', function(e) {
+                e.preventDefault();
+                uploadFile(`admin-${newBankId}-form`);
+            });
         }
         
         // حفظ البيانات إلى localStorage
