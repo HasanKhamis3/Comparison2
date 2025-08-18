@@ -194,7 +194,7 @@
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
@@ -205,12 +205,18 @@
             justify-content: center;
             text-decoration: none;
             height: 40px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
         button:hover, .btn:hover {
             background-color: #2980b9;
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        button:active, .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
         }
         
         button i, .btn i {
@@ -236,8 +242,8 @@
         
         .btn-success {
             background-color: var(--success-color);
-            padding: 8px 12px;
-            font-size: 13px;
+            padding: 12px 20px;
+            font-size: 14px;
         }
         
         .btn-success:hover {
@@ -289,6 +295,11 @@
             flex: 1;
             min-width: 200px;
             max-width: 300px;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fff;
+            font-size: 16px;
         }
         
         .bank-actions {
@@ -306,6 +317,7 @@
         .add-bank input[type="text"] {
             flex: 1;
             max-width: 300px;
+            padding: 10px 15px;
         }
         
         /* أنماط صفحة المقارنة */
@@ -321,6 +333,7 @@
         .comparison-tabs {
             display: flex;
             border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
         }
         
         .comparison-tab {
@@ -354,6 +367,7 @@
             gap: 15px;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         
         .date-range-group {
@@ -371,7 +385,7 @@
         
         th, td {
             padding: 15px;
-            text-align: left;
+            text-align: right;
             border-bottom: 1px solid #eee;
         }
         
@@ -496,17 +510,21 @@
             display: flex;
             gap: 15px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         
         .search-box {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex: 1;
+            min-width: 300px;
         }
         
         .search-box input {
             flex: 1;
-            max-width: 300px;
+            max-width: 400px;
+            padding: 10px 15px;
         }
         
         /* أنماط إضافية */
@@ -564,6 +582,54 @@
             background-color: var(--success-color);
             width: 0;
             transition: width 0.3s;
+        }
+        
+        .uploaded-files {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #eee;
+        }
+        
+        .uploaded-file i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+            font-size: 20px;
+        }
+        
+        .uploaded-file-info {
+            flex: 1;
+        }
+        
+        .uploaded-file-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .uploaded-file-details {
+            display: flex;
+            gap: 15px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .uploaded-file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .uploaded-file-actions button {
+            padding: 5px 10px;
+            font-size: 12px;
         }
         
         @keyframes spin {
@@ -657,6 +723,17 @@
             .search-box input {
                 max-width: 100%;
             }
+            
+            .uploaded-file {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .uploaded-file-actions {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: flex-end;
+            }
         }
     </style>
 </head>
@@ -730,6 +807,9 @@
                                     </button>
                                 </div>
                             </form>
+                            <div class="uploaded-files" id="baj-uploaded-files">
+                                <!-- سيتم ملؤها بالملفات المرفوعة -->
+                            </div>
                         </div>
                         
                         <!-- بنك BAB -->
@@ -769,6 +849,9 @@
                                     </button>
                                 </div>
                             </form>
+                            <div class="uploaded-files" id="bab-uploaded-files">
+                                <!-- سيتم ملؤها بالملفات المرفوعة -->
+                            </div>
                         </div>
                     </div>
                     
@@ -806,6 +889,9 @@
                             </button>
                         </div>
                     </form>
+                    <div class="uploaded-files" id="gds-uploaded-files">
+                        <!-- سيتم ملؤها بالملفات المرفوعة -->
+                    </div>
                 </div>
                 
                 <div class="upload-section">
@@ -833,6 +919,9 @@
                             </button>
                         </div>
                     </form>
+                    <div class="uploaded-files" id="expedia-uploaded-files">
+                        <!-- سيتم ملؤها بالملفات المرفوعة -->
+                    </div>
                 </div>
                 
                 <div class="upload-section">
@@ -860,6 +949,9 @@
                             </button>
                         </div>
                     </form>
+                    <div class="uploaded-files" id="tbo-flight-uploaded-files">
+                        <!-- سيتم ملؤها بالملفات المرفوعة -->
+                    </div>
                 </div>
                 
                 <div class="upload-section">
@@ -887,6 +979,9 @@
                             </button>
                         </div>
                     </form>
+                    <div class="uploaded-files" id="tbo-hotel-uploaded-files">
+                        <!-- سيتم ملؤها بالملفات المرفوعة -->
+                    </div>
                 </div>
             </div>
 
@@ -1101,6 +1196,16 @@
         // قاعدة البيانات الوهمية
         let database = [];
         
+        // تخزين الملفات المرفوعة
+        let uploadedFiles = {
+            'admin-baj-form': [],
+            'admin-bab-form': [],
+            'gds-form': [],
+            'expedia-form': [],
+            'tbo-flight-form': [],
+            'tbo-hotel-form': []
+        };
+        
         // عرض معلومات الملف المختار
         function showFileInfo(input) {
             if (input.files && input.files.length > 0) {
@@ -1204,19 +1309,20 @@
                 
                 if (progress >= 100) {
                     clearInterval(progressInterval);
-                    uploadComplete(formId);
+                    uploadComplete(formId, fileInput.files[0]);
                 }
             }, 100);
         }
 
         // اكتمال عملية الرفع
-        function uploadComplete(formId) {
+        function uploadComplete(formId, file) {
             const form = document.getElementById(formId);
             const fileInput = form.querySelector('input[type="file"]');
             const submitButton = form.querySelector('button[type="button"]');
             const fileInfoDiv = document.getElementById(`${formId}-file-info`);
             const fileStatusSpan = fileInfoDiv.querySelector('.file-status');
             const uploadProgressDiv = document.getElementById(`${formId}-upload-progress`);
+            const uploadedFilesDiv = document.getElementById(`${formId}-uploaded-files`);
             
             // إعادة تمكين الزر
             submitButton.disabled = false;
@@ -1228,6 +1334,24 @@
             // تحديث حالة الملف
             fileStatusSpan.textContent = 'تم الرفع بنجاح';
             fileStatusSpan.style.backgroundColor = '#27ae60';
+            
+            // إضافة الملف إلى قائمة الملفات المرفوعة
+            const now = new Date();
+            const uploadTime = now.toLocaleString('ar-SA');
+            
+            if (!uploadedFiles[formId]) {
+                uploadedFiles[formId] = [];
+            }
+            
+            uploadedFiles[formId].push({
+                name: file.name,
+                size: file.size,
+                date: uploadTime,
+                formId: formId
+            });
+            
+            // عرض الملف المرفوع
+            renderUploadedFiles(formId);
             
             // إنشاء بيانات وهمية بناءً على نوع الملف
             if (formId.includes('admin')) {
@@ -1245,6 +1369,59 @@
             }
             
             showAlert('تم رفع الملف بنجاح', 'success');
+            
+            // إعادة تعيين حقل الرفع
+            fileInput.value = '';
+            setTimeout(() => {
+                fileInfoDiv.style.display = 'none';
+            }, 2000);
+        }
+
+        // عرض الملفات المرفوعة
+        function renderUploadedFiles(formId) {
+            const uploadedFilesDiv = document.getElementById(`${formId}-uploaded-files`);
+            uploadedFilesDiv.innerHTML = '';
+            
+            if (uploadedFiles[formId] && uploadedFiles[formId].length > 0) {
+                uploadedFiles[formId].forEach((file, index) => {
+                    const fileElement = document.createElement('div');
+                    fileElement.className = 'uploaded-file';
+                    fileElement.innerHTML = `
+                        <i class="fas fa-file-excel"></i>
+                        <div class="uploaded-file-info">
+                            <div class="uploaded-file-name">${file.name}</div>
+                            <div class="uploaded-file-details">
+                                <span>${formatFileSize(file.size)}</span>
+                                <span>${file.date}</span>
+                            </div>
+                        </div>
+                        <div class="uploaded-file-actions">
+                            <button onclick="viewUploadedFile('${formId}', ${index})" class="btn">
+                                <i class="fas fa-eye"></i> عرض
+                            </button>
+                            <button onclick="removeUploadedFile('${formId}', ${index})" class="btn-delete">
+                                <i class="fas fa-trash"></i> حذف
+                            </button>
+                        </div>
+                    `;
+                    uploadedFilesDiv.appendChild(fileElement);
+                });
+            }
+        }
+
+        // عرض تفاصيل الملف المرفوع
+        function viewUploadedFile(formId, index) {
+            const file = uploadedFiles[formId][index];
+            alert(`تفاصيل الملف:\n\nالاسم: ${file.name}\nالحجم: ${formatFileSize(file.size)}\nتاريخ الرفع: ${file.date}`);
+        }
+
+        // حذف ملف مرفوع
+        function removeUploadedFile(formId, index) {
+            if (confirm('هل أنت متأكد من حذف هذا الملف؟')) {
+                uploadedFiles[formId].splice(index, 1);
+                renderUploadedFiles(formId);
+                showAlert('تم حذف الملف بنجاح', 'success');
+            }
         }
 
         // توليد بيانات بنك وهمية
@@ -1719,7 +1896,17 @@
             }
             
             const banksContainer = document.getElementById('banks-container');
-            const newBankId = bankName.replace(/\s+/g, '-');
+            const newBankId = bankName.replace(/\s+/g, '-').toLowerCase();
+            
+            // التحقق من عدم وجود بنك بنفس الاسم
+            const existingBank = Array.from(banksContainer.querySelectorAll('.bank-section')).find(bank => {
+                return bank.querySelector('.bank-name').value.toLowerCase() === bankName.toLowerCase();
+            });
+            
+            if (existingBank) {
+                showAlert('هذا البنك موجود بالفعل', 'warning');
+                return;
+            }
             
             const bankHTML = `
                 <div class="bank-section" data-bank="${newBankId}">
@@ -1758,11 +1945,17 @@
                             </button>
                         </div>
                     </form>
+                    <div class="uploaded-files" id="admin-${newBankId}-form-uploaded-files">
+                        <!-- سيتم ملؤها بالملفات المرفوعة -->
+                    </div>
                 </div>
             `;
             
             banksContainer.insertAdjacentHTML('beforeend', bankHTML);
             document.getElementById('new-bank-name').value = '';
+            
+            // إضافة مكان لتخزين ملفات البنك الجديد
+            uploadedFiles[`admin-${newBankId}-form`] = [];
             
             // عرض رسالة نجاح
             showAlert('تم إضافة البنك بنجاح', 'success');
@@ -1779,13 +1972,23 @@
                 return;
             }
             
+            // تحديث القيمة المخزنة في حقل الإدخال المخفي
+            const form = bankHeader.nextElementSibling;
+            form.querySelector('input[name="bank"]').value = newName;
+            
             showAlert('تم تحديث اسم البنك بنجاح', 'success');
         }
 
         // حذف بنك
         function deleteBank(button) {
-            if (confirm('هل أنت متأكد من حذف هذا البنك؟')) {
+            if (confirm('هل أنت متأكد من حذف هذا البنك؟ سيتم حذف جميع الملفات المرتبطة به.')) {
                 const bankSection = button.closest('.bank-section');
+                const formId = bankSection.querySelector('form').id;
+                
+                // حذف الملفات المرفوعة لهذا البنك
+                delete uploadedFiles[formId];
+                
+                // حذف العنصر من الواجهة
                 bankSection.remove();
                 showAlert('تم حذف البنك بنجاح', 'success');
             }
@@ -1850,7 +2053,106 @@
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('from-date').value = today;
             document.getElementById('to-date').value = today;
+            
+            // تحميل أي بيانات محفوظة في localStorage
+            loadFromLocalStorage();
         };
+        
+        // تحميل البيانات من localStorage
+        function loadFromLocalStorage() {
+            const savedBanks = localStorage.getItem('banks');
+            if (savedBanks) {
+                const banks = JSON.parse(savedBanks);
+                banks.forEach(bank => {
+                    addNewBankFromStorage(bank);
+                });
+            }
+            
+            const savedUploads = localStorage.getItem('uploadedFiles');
+            if (savedUploads) {
+                uploadedFiles = JSON.parse(savedUploads);
+                Object.keys(uploadedFiles).forEach(formId => {
+                    if (uploadedFiles[formId].length > 0) {
+                        renderUploadedFiles(formId);
+                    }
+                });
+            }
+            
+            const savedDatabase = localStorage.getItem('database');
+            if (savedDatabase) {
+                database = JSON.parse(savedDatabase);
+            }
+        }
+        
+        // إضافة بنك من التخزين المحلي
+        function addNewBankFromStorage(bank) {
+            const banksContainer = document.getElementById('banks-container');
+            const newBankId = bank.id;
+            
+            const bankHTML = `
+                <div class="bank-section" data-bank="${newBankId}">
+                    <div class="bank-header">
+                        <input type="text" value="${bank.name}" class="bank-name">
+                        <div class="bank-actions">
+                            <button class="btn-edit" onclick="updateBankName(this)">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                            <button class="btn-delete" onclick="deleteBank(this)">
+                                <i class="fas fa-trash"></i> حذف
+                            </button>
+                        </div>
+                    </div>
+                    <form class="upload-form" id="admin-${newBankId}-form">
+                        <input type="hidden" name="bank" value="${bank.name}">
+                        <div class="form-group">
+                            <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
+                            </div>
+                            <div id="admin-${newBankId}-form-file-info" class="file-info" style="display:none;">
+                                <i class="fas fa-file-excel"></i>
+                                <span class="file-name"></span>
+                                <span class="file-size"></span>
+                                <span class="file-status">جاهز للرفع</span>
+                            </div>
+                            <div class="upload-progress" id="admin-${newBankId}-form-upload-progress">
+                                <div>جاري الرفع...</div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="admin-${newBankId}-form-progress-bar"></div>
+                                </div>
+                            </div>
+                            <button type="button" onclick="uploadFile('admin-${newBankId}-form')" class="btn-success">
+                                <i class="fas fa-upload"></i> رفع الملف
+                            </button>
+                        </div>
+                    </form>
+                    <div class="uploaded-files" id="admin-${newBankId}-form-uploaded-files">
+                        <!-- سيتم ملؤها بالملفات المرفوعة -->
+                    </div>
+                </div>
+            `;
+            
+            banksContainer.insertAdjacentHTML('beforeend', bankHTML);
+        }
+        
+        // حفظ البيانات إلى localStorage
+        function saveToLocalStorage() {
+            const banks = Array.from(document.querySelectorAll('.bank-section')).map(bank => {
+                return {
+                    id: bank.dataset.bank,
+                    name: bank.querySelector('.bank-name').value
+                };
+            });
+            
+            localStorage.setItem('banks', JSON.stringify(banks));
+            localStorage.setItem('uploadedFiles', JSON.stringify(uploadedFiles));
+            localStorage.setItem('database', JSON.stringify(database));
+        }
+        
+        // حفظ البيانات عند إغلاق الصفحة
+        window.addEventListener('beforeunload', function() {
+            saveToLocalStorage();
+        });
     </script>
 </body>
 </html>
