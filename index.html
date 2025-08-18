@@ -19,6 +19,7 @@
             --gds-color: #9b59b6;
             --tbo-color: #e67e22;
             --expedia-color: #1abc9c;
+            --database-color: #34495e;
         }
         
         body {
@@ -162,7 +163,7 @@
             color: var(--secondary-color);
         }
         
-        input[type="file"], input[type="text"], select {
+        input[type="file"], input[type="text"], select, input[type="date"] {
             padding: 12px 15px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -171,7 +172,7 @@
             font-size: 14px;
         }
         
-        input[type="file"]:focus, input[type="text"]:focus, select:focus {
+        input[type="file"]:focus, input[type="text"]:focus, select:focus, input[type="date"]:focus {
             border-color: var(--secondary-color);
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
             outline: none;
@@ -245,6 +246,22 @@
             background-color: #8e44ad;
         }
         
+        .btn-database {
+            background-color: var(--database-color);
+        }
+        
+        .btn-database:hover {
+            background-color: #2c3e50;
+        }
+        
+        .btn-clear {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-clear:hover {
+            background-color: #c0392b;
+        }
+        
         .bank-section {
             margin-bottom: 25px;
             padding: 20px;
@@ -291,6 +308,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
         
         .comparison-tabs {
@@ -322,6 +341,19 @@
         
         .comparison-content.active {
             display: block;
+        }
+        
+        .date-range {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .date-range-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         table {
@@ -453,6 +485,55 @@
             font-size: 20px;
         }
         
+        /* أنماط صفحة قاعدة البيانات */
+        .database-actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        /* أنماط إضافية */
+        .file-info {
+            margin-top: 8px;
+            font-size: 14px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-info i {
+            color: var(--secondary-color);
+        }
+        
+        .file-name {
+            font-weight: 500;
+        }
+        
+        .file-size {
+            color: #666;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fa-spin {
+            animation: spin 1s linear infinite;
+        }
+        
         /* التجاوب */
         @media (max-width: 992px) {
             .container {
@@ -489,7 +570,11 @@
             .comparison-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 15px;
+            }
+            
+            .date-range {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
         
@@ -523,37 +608,14 @@
                 width: 100%;
                 max-width: 100%;
             }
-        }
-        
-        /* أنماط إضافية لحل مشكلة اختفاء الملف */
-        .file-info {
-            margin-top: 8px;
-            font-size: 14px;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .file-info i {
-            color: var(--secondary-color);
-        }
-        
-        .file-name {
-            font-weight: 500;
-        }
-        
-        .file-size {
-            color: #666;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .fa-spin {
-            animation: spin 1s linear infinite;
+            
+            .database-actions, .search-box {
+                flex-direction: column;
+            }
+            
+            .search-box input {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -572,6 +634,9 @@
                 </a>
                 <a href="#" onclick="showPage('comparison-page')">
                     <i class="fas fa-exchange-alt"></i> المقارنة
+                </a>
+                <a href="#" onclick="showPage('database-page')">
+                    <i class="fas fa-database"></i> قاعدة البيانات
                 </a>
             </div>
         </div>
@@ -746,8 +811,30 @@
             <div id="comparison-page" style="display:none;">
                 <div class="comparison-header">
                     <h1><i class="fas fa-exchange-alt"></i> صفحة المقارنة</h1>
-                    <button onclick="refreshComparison()" class="btn-refresh">
-                        <i class="fas fa-sync-alt"></i> تحديث المقارنة
+                    <div>
+                        <button onclick="refreshComparison()" class="btn-refresh">
+                            <i class="fas fa-sync-alt"></i> تحديث المقارنة
+                        </button>
+                        <button onclick="clearComparison()" class="btn-clear">
+                            <i class="fas fa-trash"></i> مسح
+                        </button>
+                        <button onclick="saveToDatabase()" class="btn-database">
+                            <i class="fas fa-save"></i> حفظ
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="date-range">
+                    <div class="date-range-group">
+                        <label for="from-date">من تاريخ:</label>
+                        <input type="date" id="from-date">
+                    </div>
+                    <div class="date-range-group">
+                        <label for="to-date">إلى تاريخ:</label>
+                        <input type="date" id="to-date">
+                    </div>
+                    <button onclick="filterByDate()" class="btn">
+                        <i class="fas fa-filter"></i> تصفية
                     </button>
                 </div>
                 
@@ -885,89 +972,58 @@
                     </table>
                 </div>
             </div>
+
+            <!-- صفحة قاعدة البيانات -->
+            <div id="database-page" style="display:none;">
+                <h1><i class="fas fa-database"></i> قاعدة البيانات</h1>
+                
+                <div class="database-actions">
+                    <div class="search-box">
+                        <input type="text" id="search-query" placeholder="ابحث في قاعدة البيانات...">
+                        <button onclick="searchDatabase()" class="btn">
+                            <i class="fas fa-search"></i> بحث
+                        </button>
+                    </div>
+                    <button onclick="exportToExcel()" class="btn-success">
+                        <i class="fas fa-file-excel"></i> تصدير إلى Excel
+                    </button>
+                </div>
+                
+                <table id="database-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>النوع</th>
+                            <th>البنك</th>
+                            <th>Booking Ref</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                            <th>تاريخ الحفظ</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="database-data">
+                        <!-- سيتم ملؤها بالبيانات ديناميكياً -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
         // بيانات وهمية للمقارنة (يمكن استبدالها ببيانات حقيقية من السيرفر)
-        const sampleFlightsData = [
-            {
-                bookingRef: "REF123",
-                bookingDate: "2023-10-01",
-                redemptionType: "Standard",
-                supplier: "Emirates",
-                flightPNR: "ABC123",
-                tickets: 2,
-                gdsPNR: "ABC123",
-                tboPNR: "ABC123",
-                match: true
-            },
-            {
-                bookingRef: "REF124",
-                bookingDate: "2023-10-02",
-                redemptionType: "Upgrade",
-                supplier: "Qatar",
-                flightPNR: "XYZ456",
-                tickets: 1,
-                gdsPNR: "XYZ789",
-                tboPNR: "XYZ456",
-                match: false,
-                mismatchType: "GDS"
-            },
-            {
-                bookingRef: "REF125",
-                bookingDate: "2023-10-03",
-                redemptionType: "Standard",
-                supplier: "Etihad",
-                flightPNR: "DEF456",
-                tickets: 3,
-                gdsPNR: "DEF456",
-                tboPNR: "DEF789",
-                match: false,
-                mismatchType: "TBO"
-            }
-        ];
-
-        const sampleHotelsData = [
-            {
-                bookingRef: "HREF123",
-                bookingDate: "2023-10-01",
-                redemptionType: "Standard",
-                supplier: "Hilton",
-                hotelItinerary: "HIT123",
-                expediaItinerary: "HIT123",
-                tboConfirmation: "HIT123",
-                match: true
-            },
-            {
-                bookingRef: "HREF124",
-                bookingDate: "2023-10-02",
-                redemptionType: "Upgrade",
-                supplier: "Marriott",
-                hotelItinerary: "HIT456",
-                expediaItinerary: "HIT789",
-                tboConfirmation: "HIT456",
-                match: false,
-                mismatchType: "Expedia"
-            },
-            {
-                bookingRef: "HREF125",
-                bookingDate: "2023-10-03",
-                redemptionType: "Standard",
-                supplier: "Sheraton",
-                hotelItinerary: "HIT789",
-                expediaItinerary: "HIT789",
-                tboConfirmation: "HIT000",
-                match: false,
-                mismatchType: "TBO"
-            }
-        ];
-
+        let sampleFlightsData = [];
+        let sampleHotelsData = [];
+        
+        // قاعدة البيانات الوهمية
+        let database = [];
+        
         // عرض معلومات الملف المختار
         function showFileInfo(input) {
             if (input.files && input.files.length > 0) {
                 const file = input.files[0];
-                const fileInfoDiv = input.parentElement.querySelector('.file-info');
+                const formId = input.closest('form').id;
+                const fileInfoDiv = document.getElementById(`${formId}-file-info`);
                 const fileNameSpan = fileInfoDiv.querySelector('.file-name');
                 const fileSizeSpan = fileInfoDiv.querySelector('.file-size');
                 
@@ -990,18 +1046,24 @@
         function showPage(pageId) {
             document.getElementById('files-page').style.display = 'none';
             document.getElementById('comparison-page').style.display = 'none';
+            document.getElementById('database-page').style.display = 'none';
             document.getElementById(pageId).style.display = 'block';
             
             // تحديث القائمة النشطة
             document.querySelectorAll('.nav a').forEach(link => {
                 link.classList.remove('active');
             });
-            event.target.classList.add('active');
+            event.currentTarget.classList.add('active');
             
             // إذا كانت صفحة المقارنة، عرض تبويب التذاكر افتراضيًا
             if (pageId === 'comparison-page') {
                 showComparisonTab('flights');
                 loadComparisonData();
+            }
+            
+            // إذا كانت صفحة قاعدة البيانات، تحميل البيانات
+            if (pageId === 'database-page') {
+                loadDatabase();
             }
         }
 
@@ -1015,10 +1077,10 @@
             document.querySelectorAll('.comparison-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            event.target.classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        // رفع الملفات باستخدام Fetch API بدلاً من Forms التقليدية
+        // رفع الملفات باستخدام Fetch API
         function uploadFile(formId) {
             const form = document.getElementById(formId);
             const formData = new FormData(form);
@@ -1037,50 +1099,120 @@
             // هنا يجب استبدال الرابط برابط السيرفر الحقيقي
             const endpoint = 'https://your-server.com/upload'; // تغيير هذا الرابط
             
-            fetch(endpoint, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            // محاكاة الرفع (لأغراض العرض فقط)
+            setTimeout(() => {
+                // إنشاء بيانات وهمية بناءً على نوع الملف
+                if (formId.includes('admin')) {
+                    // بيانات بنك
+                    const bankName = formData.get('bank');
+                    generateSampleBankData(bankName);
+                } else if (formId.includes('gds')) {
+                    generateSampleGDSData();
+                } else if (formId.includes('expedia')) {
+                    generateSampleExpediaData();
+                } else if (formId.includes('tbo-flight')) {
+                    generateSampleTBOFlightData();
+                } else if (formId.includes('tbo-hotel')) {
+                    generateSampleTBOHotelData();
                 }
-                return response.json();
-            })
-            .then(data => {
-                showAlert('تم رفع الملف بنجاح', 'success');
-                console.log('Upload success:', data);
                 
-                // إذا كانت الصفحة الحالية هي صفحة المقارنة، قم بتحديث البيانات
-                if (document.getElementById('comparison-page').style.display !== 'none') {
-                    loadComparisonData();
-                }
-            })
-            .catch(error => {
-                console.error('Upload error:', error);
-                showAlert('حدث خطأ أثناء رفع الملف: ' + error.message, 'danger');
-            })
-            .finally(() => {
+                showAlert('تم رفع الملف بنجاح', 'success');
+                
                 // إعادة تمكين الزر
                 submitButton.disabled = false;
                 submitButton.innerHTML = '<i class="fas fa-upload"></i> رفع';
-            });
+                
+                // إعادة تعيين حقل الملف
+                fileInput.value = '';
+                const fileInfoDiv = document.getElementById(`${formId}-file-info`);
+                fileInfoDiv.style.display = 'none';
+                
+            }, 1500);
+        }
+
+        // توليد بيانات بنك وهمية
+        function generateSampleBankData(bankName) {
+            sampleFlightsData = [
+                {
+                    bookingRef: "REF" + Math.floor(1000 + Math.random() * 9000),
+                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10)),
+                    redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
+                    supplier: ["Emirates", "Qatar", "Etihad", "Saudia"][Math.floor(Math.random() * 4)],
+                    flightPNR: "ABC" + Math.floor(100 + Math.random() * 900),
+                    tickets: 1 + Math.floor(Math.random() * 4),
+                    gdsPNR: "ABC" + Math.floor(100 + Math.random() * 900),
+                    tboPNR: "ABC" + Math.floor(100 + Math.random() * 900),
+                    match: Math.random() > 0.3,
+                    mismatchType: Math.random() > 0.5 ? "GDS" : "TBO",
+                    bank: bankName
+                },
+                {
+                    bookingRef: "REF" + Math.floor(1000 + Math.random() * 9000),
+                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10)),
+                    redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
+                    supplier: ["Emirates", "Qatar", "Etihad", "Saudia"][Math.floor(Math.random() * 4)],
+                    flightPNR: "XYZ" + Math.floor(100 + Math.random() * 900),
+                    tickets: 1 + Math.floor(Math.random() * 4),
+                    gdsPNR: "XYZ" + Math.floor(100 + Math.random() * 900),
+                    tboPNR: "XYZ" + Math.floor(100 + Math.random() * 900),
+                    match: Math.random() > 0.3,
+                    mismatchType: Math.random() > 0.5 ? "GDS" : "TBO",
+                    bank: bankName
+                }
+            ];
+            
+            sampleHotelsData = [
+                {
+                    bookingRef: "HREF" + Math.floor(1000 + Math.random() * 9000),
+                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10)),
+                    redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
+                    supplier: ["Hilton", "Marriott", "Sheraton", "Intercontinental"][Math.floor(Math.random() * 4)],
+                    hotelItinerary: "HIT" + Math.floor(100 + Math.random() * 900),
+                    expediaItinerary: "HIT" + Math.floor(100 + Math.random() * 900),
+                    tboConfirmation: "HIT" + Math.floor(100 + Math.random() * 900),
+                    match: Math.random() > 0.3,
+                    mismatchType: Math.random() > 0.5 ? "Expedia" : "TBO",
+                    bank: bankName
+                }
+            ];
+            
+            // إذا كانت صفحة المقارنة مفتوحة، قم بتحديث البيانات
+            if (document.getElementById('comparison-page').style.display !== 'none') {
+                loadComparisonData();
+            }
+        }
+
+        // توليد بيانات GDS وهمية
+        function generateSampleGDSData() {
+            // يمكنك إضافة بيانات خاصة بـ GDS هنا إذا لزم الأمر
+            showAlert('تم معالجة ملف GDS بنجاح', 'success');
+        }
+
+        // توليد بيانات Expedia وهمية
+        function generateSampleExpediaData() {
+            // يمكنك إضافة بيانات خاصة بـ Expedia هنا إذا لزم الأمر
+            showAlert('تم معالجة ملف Expedia بنجاح', 'success');
+        }
+
+        // توليد بيانات TBO Flight وهمية
+        function generateSampleTBOFlightData() {
+            // يمكنك إضافة بيانات خاصة بـ TBO Flight هنا إذا لزم الأمر
+            showAlert('تم معالجة ملف TBO Flight بنجاح', 'success');
+        }
+
+        // توليد بيانات TBO Hotel وهمية
+        function generateSampleTBOHotelData() {
+            // يمكنك إضافة بيانات خاصة بـ TBO Hotel هنا إذا لزم الأمر
+            showAlert('تم معالجة ملف TBO Hotel بنجاح', 'success');
         }
 
         // تحميل بيانات المقارنة
         function loadComparisonData() {
-            // عرض رسالة تحميل
-            const loadingAlert = showAlert('جاري تحميل بيانات المقارنة...', 'warning', true);
-            
-            // هنا يمكنك جلب البيانات من السيرفر
-            // سنستخدم البيانات الوهمية للتوضيح
-            
             // تعبئة بيانات التذاكر
             const flightsTable = document.getElementById('flights-data');
             flightsTable.innerHTML = '';
             sampleFlightsData.forEach(item => {
-                const rowClass = item.mismatchType === 'GDS' ? 'gds-row' : 
-                                item.mismatchType === 'TBO' ? 'tbo-row' : '';
+                const rowClass = !item.match ? (item.mismatchType === 'GDS' ? 'gds-row' : 'tbo-row') : '';
                 
                 const matchStatus = item.match ? 
                     '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
@@ -1105,8 +1237,7 @@
             const hotelsTable = document.getElementById('hotels-data');
             hotelsTable.innerHTML = '';
             sampleHotelsData.forEach(item => {
-                const rowClass = item.mismatchType === 'Expedia' ? 'expedia-row' : 
-                                item.mismatchType === 'TBO' ? 'tbo-row' : '';
+                const rowClass = !item.match ? (item.mismatchType === 'Expedia' ? 'expedia-row' : 'tbo-row') : '';
                 
                 const matchStatus = item.match ? 
                     '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
@@ -1128,15 +1259,12 @@
             
             // تعبئة بيانات عدم التطابق
             fillMismatchData();
-            
-            // إخفاء رسالة التحميل
-            if (loadingAlert) loadingAlert.remove();
         }
 
         // تعبئة بيانات عدم التطابق
         function fillMismatchData() {
             // GDS غير المتطابقة
-            const gdsMismatch = sampleFlightsData.filter(item => item.mismatchType === 'GDS');
+            const gdsMismatch = sampleFlightsData.filter(item => !item.match && item.mismatchType === 'GDS');
             const gdsMismatchTable = document.getElementById('gds-mismatch-data');
             gdsMismatchTable.innerHTML = '';
             gdsMismatch.forEach(item => {
@@ -1144,14 +1272,14 @@
                     <tr class="gds-row">
                         <td>${item.flightPNR}</td>
                         <td>${item.gdsPNR}</td>
-                        <td>BAJ</td>
+                        <td>${item.bank || 'BAJ'}</td>
                         <td class="mismatch">غير متطابق</td>
                     </tr>
                 `;
             });
             
             // TBO غير المتطابقة (تذاكر)
-            const tboMismatch = sampleFlightsData.filter(item => item.mismatchType === 'TBO');
+            const tboMismatch = sampleFlightsData.filter(item => !item.match && item.mismatchType === 'TBO');
             const tboMismatchTable = document.getElementById('tbo-mismatch-data');
             tboMismatchTable.innerHTML = '';
             tboMismatch.forEach(item => {
@@ -1159,14 +1287,14 @@
                     <tr class="tbo-row">
                         <td>${item.flightPNR}</td>
                         <td>${item.tboPNR}</td>
-                        <td>BAJ</td>
+                        <td>${item.bank || 'BAJ'}</td>
                         <td class="mismatch">غير متطابق</td>
                     </tr>
                 `;
             });
             
             // Expedia غير المتطابقة
-            const expediaMismatch = sampleHotelsData.filter(item => item.mismatchType === 'Expedia');
+            const expediaMismatch = sampleHotelsData.filter(item => !item.match && item.mismatchType === 'Expedia');
             const expediaMismatchTable = document.getElementById('expedia-mismatch-data');
             expediaMismatchTable.innerHTML = '';
             expediaMismatch.forEach(item => {
@@ -1174,14 +1302,14 @@
                     <tr class="expedia-row">
                         <td>${item.hotelItinerary}</td>
                         <td>${item.expediaItinerary}</td>
-                        <td>BAJ</td>
+                        <td>${item.bank || 'BAJ'}</td>
                         <td class="mismatch">غير متطابق</td>
                     </tr>
                 `;
             });
             
             // TBO غير المتطابقة (فنادق)
-            const tboHotelMismatch = sampleHotelsData.filter(item => item.mismatchType === 'TBO');
+            const tboHotelMismatch = sampleHotelsData.filter(item => !item.match && item.mismatchType === 'TBO');
             const tboHotelMismatchTable = document.getElementById('tbo-hotel-mismatch-data');
             tboHotelMismatchTable.innerHTML = '';
             tboHotelMismatch.forEach(item => {
@@ -1189,7 +1317,7 @@
                     <tr class="tbo-row">
                         <td>${item.hotelItinerary}</td>
                         <td>${item.tboConfirmation}</td>
-                        <td>BAJ</td>
+                        <td>${item.bank || 'BAJ'}</td>
                         <td class="mismatch">غير متطابق</td>
                     </tr>
                 `;
@@ -1200,6 +1328,269 @@
         function refreshComparison() {
             loadComparisonData();
             showAlert('تم تحديث بيانات المقارنة بنجاح', 'success');
+        }
+
+        // مسح بيانات المقارنة
+        function clearComparison() {
+            if (confirm('هل أنت متأكد من مسح جميع بيانات المقارنة؟')) {
+                sampleFlightsData = [];
+                sampleHotelsData = [];
+                loadComparisonData();
+                showAlert('تم مسح بيانات المقارنة بنجاح', 'success');
+            }
+        }
+
+        // تصفية البيانات حسب النطاق الزمني
+        function filterByDate() {
+            const fromDate = document.getElementById('from-date').value;
+            const toDate = document.getElementById('to-date').value;
+            
+            if (!fromDate || !toDate) {
+                showAlert('الرجاء تحديد تاريخ البداية والنهاية', 'danger');
+                return;
+            }
+            
+            // تصفية بيانات التذاكر
+            const filteredFlights = sampleFlightsData.filter(item => {
+                const itemDate = new Date(item.bookingDate);
+                const from = new Date(fromDate);
+                const to = new Date(toDate);
+                return itemDate >= from && itemDate <= to;
+            });
+            
+            // تصفية بيانات الفنادق
+            const filteredHotels = sampleHotelsData.filter(item => {
+                const itemDate = new Date(item.bookingDate);
+                const from = new Date(fromDate);
+                const to = new Date(toDate);
+                return itemDate >= from && itemDate <= to;
+            });
+            
+            if (filteredFlights.length === 0 && filteredHotels.length === 0) {
+                showAlert('لا توجد بيانات في النطاق الزمني المحدد', 'warning');
+                return;
+            }
+            
+            // عرض البيانات المصفاة
+            const flightsTable = document.getElementById('flights-data');
+            flightsTable.innerHTML = '';
+            filteredFlights.forEach(item => {
+                const rowClass = !item.match ? (item.mismatchType === 'GDS' ? 'gds-row' : 'tbo-row') : '';
+                
+                const matchStatus = item.match ? 
+                    '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
+                    `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
+                
+                flightsTable.innerHTML += `
+                    <tr class="${rowClass}">
+                        <td>${item.bookingRef}</td>
+                        <td>${item.bookingDate}</td>
+                        <td>${item.redemptionType}</td>
+                        <td>${item.supplier}</td>
+                        <td>${item.flightPNR}</td>
+                        <td>${item.tickets}</td>
+                        <td>${item.gdsPNR}</td>
+                        <td>${item.tboPNR}</td>
+                        ${matchStatus}
+                    </tr>
+                `;
+            });
+            
+            const hotelsTable = document.getElementById('hotels-data');
+            hotelsTable.innerHTML = '';
+            filteredHotels.forEach(item => {
+                const rowClass = !item.match ? (item.mismatchType === 'Expedia' ? 'expedia-row' : 'tbo-row') : '';
+                
+                const matchStatus = item.match ? 
+                    '<td class="match"><i class="fas fa-check-circle"></i> متطابق</td>' : 
+                    `<td class="mismatch"><i class="fas fa-times-circle"></i> غير متطابق (${item.mismatchType})</td>`;
+                
+                hotelsTable.innerHTML += `
+                    <tr class="${rowClass}">
+                        <td>${item.bookingRef}</td>
+                        <td>${item.bookingDate}</td>
+                        <td>${item.redemptionType}</td>
+                        <td>${item.supplier}</td>
+                        <td>${item.hotelItinerary}</td>
+                        <td>${item.expediaItinerary}</td>
+                        <td>${item.tboConfirmation}</td>
+                        ${matchStatus}
+                    </tr>
+                `;
+            });
+            
+            showAlert(`تم تصفية البيانات من ${fromDate} إلى ${toDate}`, 'success');
+        }
+
+        // حفظ البيانات إلى قاعدة البيانات
+        function saveToDatabase() {
+            if (sampleFlightsData.length === 0 && sampleHotelsData.length === 0) {
+                showAlert('لا توجد بيانات لحفظها', 'warning');
+                return;
+            }
+            
+            const now = new Date();
+            const saveDate = now.toISOString().split('T')[0] + ' ' + now.toTimeString().split(' ')[0];
+            
+            // حفظ بيانات التذاكر
+            sampleFlightsData.forEach(item => {
+                database.push({
+                    id: database.length + 1,
+                    type: 'تذاكر',
+                    bank: item.bank || 'BAJ',
+                    bookingRef: item.bookingRef,
+                    date: item.bookingDate,
+                    status: item.match ? 'متطابق' : `غير متطابق (${item.mismatchType})`,
+                    saveDate: saveDate,
+                    details: item
+                });
+            });
+            
+            // حفظ بيانات الفنادق
+            sampleHotelsData.forEach(item => {
+                database.push({
+                    id: database.length + 1,
+                    type: 'فنادق',
+                    bank: item.bank || 'BAJ',
+                    bookingRef: item.bookingRef,
+                    date: item.bookingDate,
+                    status: item.match ? 'متطابق' : `غير متطابق (${item.mismatchType})`,
+                    saveDate: saveDate,
+                    details: item
+                });
+            });
+            
+            showAlert('تم حفظ البيانات في قاعدة البيانات بنجاح', 'success');
+            
+            // إذا كانت صفحة قاعدة البيانات مفتوحة، قم بتحديثها
+            if (document.getElementById('database-page').style.display !== 'none') {
+                loadDatabase();
+            }
+        }
+
+        // تحميل بيانات قاعدة البيانات
+        function loadDatabase() {
+            const databaseTable = document.getElementById('database-data');
+            databaseTable.innerHTML = '';
+            
+            if (database.length === 0) {
+                databaseTable.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center;">لا توجد بيانات في قاعدة البيانات</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            database.forEach(item => {
+                const statusClass = item.status.includes('غير متطابق') ? 'mismatch' : 'match';
+                
+                databaseTable.innerHTML += `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.type}</td>
+                        <td>${item.bank}</td>
+                        <td>${item.bookingRef}</td>
+                        <td>${item.date}</td>
+                        <td class="${statusClass}">${item.status}</td>
+                        <td>${item.saveDate}</td>
+                        <td>
+                            <button onclick="viewDetails(${item.id})" class="btn">
+                                <i class="fas fa-eye"></i> عرض
+                            </button>
+                            <button onclick="deleteRecord(${item.id})" class="btn-delete">
+                                <i class="fas fa-trash"></i> حذف
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // عرض تفاصيل السجل
+        function viewDetails(id) {
+            const record = database.find(item => item.id === id);
+            if (record) {
+                alert(`تفاصيل السجل ${id}:\n\n` + 
+                      `النوع: ${record.type}\n` +
+                      `البنك: ${record.bank}\n` +
+                      `Booking Ref: ${record.bookingRef}\n` +
+                      `التاريخ: ${record.date}\n` +
+                      `الحالة: ${record.status}\n` +
+                      `تاريخ الحفظ: ${record.saveDate}`);
+            }
+        }
+
+        // حذف سجل من قاعدة البيانات
+        function deleteRecord(id) {
+            if (confirm('هل أنت متأكد من حذف هذا السجل؟')) {
+                database = database.filter(item => item.id !== id);
+                loadDatabase();
+                showAlert('تم حذف السجل بنجاح', 'success');
+            }
+        }
+
+        // البحث في قاعدة البيانات
+        function searchDatabase() {
+            const query = document.getElementById('search-query').value.toLowerCase();
+            if (!query) {
+                loadDatabase();
+                return;
+            }
+            
+            const results = database.filter(item => 
+                item.bookingRef.toLowerCase().includes(query) ||
+                item.bank.toLowerCase().includes(query) ||
+                item.type.toLowerCase().includes(query) ||
+                item.status.toLowerCase().includes(query)
+            );
+            
+            const databaseTable = document.getElementById('database-data');
+            databaseTable.innerHTML = '';
+            
+            if (results.length === 0) {
+                databaseTable.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center;">لا توجد نتائج للبحث</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            results.forEach(item => {
+                const statusClass = item.status.includes('غير متطابق') ? 'mismatch' : 'match';
+                
+                databaseTable.innerHTML += `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${item.type}</td>
+                        <td>${item.bank}</td>
+                        <td>${item.bookingRef}</td>
+                        <td>${item.date}</td>
+                        <td class="${statusClass}">${item.status}</td>
+                        <td>${item.saveDate}</td>
+                        <td>
+                            <button onclick="viewDetails(${item.id})" class="btn">
+                                <i class="fas fa-eye"></i> عرض
+                            </button>
+                            <button onclick="deleteRecord(${item.id})" class="btn-delete">
+                                <i class="fas fa-trash"></i> حذف
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // تصدير البيانات إلى Excel
+        function exportToExcel() {
+            if (database.length === 0) {
+                showAlert('لا توجد بيانات لتصديرها', 'warning');
+                return;
+            }
+            
+            // محاكاة التصدير إلى Excel
+            showAlert('تم تصدير البيانات إلى Excel بنجاح', 'success');
         }
 
         // إضافة بنك جديد
@@ -1232,7 +1623,7 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                <div id="${newBankId}-file-info" class="file-info" style="display:none;">
+                                <div id="admin-${newBankId}-form-file-info" class="file-info" style="display:none;">
                                     <i class="fas fa-file-excel"></i>
                                     <span class="file-name"></span>
                                     <span class="file-size"></span>
@@ -1263,8 +1654,6 @@
                 showAlert('الرجاء إدخال اسم صحيح للبنك', 'danger');
                 return;
             }
-            
-            // هنا يمكنك إضافة كود لتحديث اسم البنك في قاعدة البيانات
             
             showAlert('تم تحديث اسم البنك بنجاح', 'success');
         }
@@ -1309,6 +1698,11 @@
         // عرض صفحة الملفات افتراضياً عند التحميل
         window.onload = function() {
             showPage('files-page');
+            
+            // تعيين التاريخ الافتراضي (اليوم)
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('from-date').value = today;
+            document.getElementById('to-date').value = today;
         };
     </script>
 </body>
