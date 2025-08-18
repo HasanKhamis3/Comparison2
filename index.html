@@ -1202,18 +1202,109 @@
 
     <script>
         // بيانات وهمية للمقارنة (يمكن استبدالها ببيانات حقيقية من السيرفر)
-        let sampleFlightsData = [];
-        let sampleHotelsData = [];
+        let sampleFlightsData = [
+            {
+                bookingRef: "REF1234",
+                bookingDate: "2023-10-15",
+                redemptionType: "Standard",
+                supplier: "Emirates",
+                flightPNR: "ABC123",
+                tickets: 2,
+                gdsPNR: "XYZ456",
+                tboPNR: "DEF789",
+                match: false,
+                mismatchType: "GDS",
+                bank: "BAJ"
+            },
+            {
+                bookingRef: "REF5678",
+                bookingDate: "2023-10-16",
+                redemptionType: "Upgrade",
+                supplier: "Qatar",
+                flightPNR: "GHI987",
+                tickets: 1,
+                gdsPNR: "JKL654",
+                tboPNR: "MNO321",
+                match: true,
+                bank: "BAJ"
+            }
+        ];
+        
+        let sampleHotelsData = [
+            {
+                bookingRef: "HREF4321",
+                bookingDate: "2023-10-15",
+                redemptionType: "Premium",
+                supplier: "Hilton",
+                hotelItinerary: "HIT123",
+                expediaItinerary: "HIT456",
+                tboConfirmation: "HIT789",
+                match: false,
+                mismatchType: "Expedia",
+                bank: "BAJ"
+            },
+            {
+                bookingRef: "HREF8765",
+                bookingDate: "2023-10-17",
+                redemptionType: "Standard",
+                supplier: "Marriott",
+                hotelItinerary: "HIT987",
+                expediaItinerary: "HIT987",
+                tboConfirmation: "HIT987",
+                match: true,
+                bank: "BAJ"
+            }
+        ];
         
         // قاعدة البيانات الوهمية
-        let database = [];
+        let database = [
+            {
+                id: 1,
+                type: "تذاكر",
+                bank: "BAJ",
+                bookingRef: "REF1234",
+                date: "2023-10-15",
+                status: "غير متطابق (GDS)",
+                saveDate: "2023-10-15 14:30:25"
+            },
+            {
+                id: 2,
+                type: "فنادق",
+                bank: "BAJ",
+                bookingRef: "HREF4321",
+                date: "2023-10-15",
+                status: "غير متطابق (Expedia)",
+                saveDate: "2023-10-15 15:45:12"
+            }
+        ];
         
         // تخزين الملفات المرفوعة
         let uploadedFiles = {
-            'admin-baj-form': [],
+            'admin-baj-form': [
+                {
+                    name: "baj_report_20231015.xlsx",
+                    size: 24576,
+                    date: "2023-10-15 14:30:25",
+                    formId: "admin-baj-form"
+                }
+            ],
             'admin-bab-form': [],
-            'gds-form': [],
-            'expedia-form': [],
+            'gds-form': [
+                {
+                    name: "gds_report_20231015.xlsx",
+                    size: 18432,
+                    date: "2023-10-15 14:35:40",
+                    formId: "gds-form"
+                }
+            ],
+            'expedia-form': [
+                {
+                    name: "expedia_report_20231015.xlsx",
+                    size: 20480,
+                    date: "2023-10-15 15:40:18",
+                    formId: "expedia-form"
+                }
+            ],
             'tbo-flight-form': [],
             'tbo-hotel-form': []
         };
@@ -1273,7 +1364,7 @@
         function showComparisonTab(tabId) {
             document.getElementById('files-comparison').classList.remove('active');
             document.getElementById('flights-comparison').classList.remove('active');
-            document.getElementById('hotels-comparison').classlist.remove('active');
+            document.getElementById('hotels-comparison').classList.remove('active');
             document.getElementById(`${tabId}-comparison`).classList.add('active');
             
             // تحديث التبويبات النشطة
@@ -2063,6 +2154,12 @@
             
             // تحميل أي بيانات محفوظة في localStorage
             loadFromLocalStorage();
+            
+            // عرض البيانات الأولية
+            loadComparisonData();
+            renderUploadedFiles('admin-baj-form');
+            renderUploadedFiles('gds-form');
+            renderUploadedFiles('expedia-form');
         };
         
         // تحميل البيانات من localStorage
