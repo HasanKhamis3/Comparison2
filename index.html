@@ -194,7 +194,7 @@
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 8px 15px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 14px;
@@ -204,7 +204,7 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            height: 40px;
+            height: 36px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
@@ -242,7 +242,7 @@
         
         .btn-success {
             background-color: var(--success-color);
-            padding: 12px 20px;
+            padding: 8px 15px;
             font-size: 14px;
         }
         
@@ -747,11 +747,8 @@
             </div>
             
             <div class="nav">
-                <a href="#" id="files-link" class="active">
-                    <i class="fas fa-file-upload"></i> الملفات
-                </a>
-                <a href="#" id="comparison-link">
-                    <i class="fas fa-exchange-alt"></i> المقارنة
+                <a href="#" id="comparison-link" class="active">
+                    <i class="fas fa-exchange-alt"></i> المقارنة والملفات
                 </a>
                 <a href="#" id="database-link">
                     <i class="fas fa-database"></i> قاعدة البيانات
@@ -761,237 +758,13 @@
 
         <!-- المحتوى الرئيسي -->
         <div class="content">
-            <!-- صفحة الملفات -->
-            <div id="files-page">
-                <h1><i class="fas fa-file-upload"></i> صفحة الملفات</h1>
-                
-                <!-- قسم البنوك -->
-                <div class="upload-section">
-                    <h2><i class="fas fa-university"></i> تقرير المبيعات اليومية - Admin Daily Report</h2>
-                    
-                    <div id="banks-container">
-                        <!-- بنك BAJ -->
-                        <div class="bank-section" data-bank="BAJ">
-                            <div class="bank-header">
-                                <input type="text" value="BAJ" class="bank-name">
-                                <div class="bank-actions">
-                                    <button class="btn-edit" onclick="updateBankName(this)">
-                                        <i class="fas fa-edit"></i> تعديل
-                                    </button>
-                                    <button class="btn-delete" onclick="deleteBank(this)">
-                                        <i class="fas fa-trash"></i> حذف
-                                    </button>
-                                </div>
-                            </div>
-                            <form class="upload-form" id="admin-baj-form">
-                                <input type="hidden" name="bank" value="BAJ">
-                                <div class="form-group">
-                                    <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                                    <div class="file-input-wrapper">
-                                        <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    </div>
-                                    <div id="baj-file-info" class="file-info" style="display:none;">
-                                        <i class="fas fa-file-excel"></i>
-                                        <span class="file-name"></span>
-                                        <span class="file-size"></span>
-                                        <span class="file-status">جاهز للرفع</span>
-                                    </div>
-                                    <div class="upload-progress" id="baj-upload-progress">
-                                        <div>جاري الرفع...</div>
-                                        <div class="progress-bar">
-                                            <div class="progress" id="baj-progress-bar"></div>
-                                        </div>
-                                    </div>
-                                    <button type="button" onclick="uploadFile('admin-baj-form')" class="btn-success">
-                                        <i class="fas fa-upload"></i> رفع الملف
-                                    </button>
-                                </div>
-                            </form>
-                            <div class="uploaded-files" id="baj-uploaded-files">
-                                <!-- سيتم ملؤها بالملفات المرفوعة -->
-                            </div>
-                        </div>
-                        
-                        <!-- بنك BAB -->
-                        <div class="bank-section" data-bank="BAB">
-                            <div class="bank-header">
-                                <input type="text" value="BAB" class="bank-name">
-                                <div class="bank-actions">
-                                    <button class="btn-edit" onclick="updateBankName(this)">
-                                        <i class="fas fa-edit"></i> تعديل
-                                    </button>
-                                    <button class="btn-delete" onclick="deleteBank(this)">
-                                        <i class="fas fa-trash"></i> حذف
-                                    </button>
-                                </div>
-                            </div>
-                            <form class="upload-form" id="admin-bab-form">
-                                <input type="hidden" name="bank" value="BAB">
-                                <div class="form-group">
-                                    <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                                    <div class="file-input-wrapper">
-                                        <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                                    </div>
-                                    <div id="bab-file-info" class="file-info" style="display:none;">
-                                        <i class="fas fa-file-excel"></i>
-                                        <span class="file-name"></span>
-                                        <span class="file-size"></span>
-                                        <span class="file-status">جاهز للرفع</span>
-                                    </div>
-                                    <div class="upload-progress" id="bab-upload-progress">
-                                        <div>جاري الرفع...</div>
-                                        <div class="progress-bar">
-                                            <div class="progress" id="bab-progress-bar"></div>
-                                        </div>
-                                    </div>
-                                    <button type="button" onclick="uploadFile('admin-bab-form')" class="btn-success">
-                                        <i class="fas fa-upload"></i> رفع الملف
-                                    </button>
-                                </div>
-                            </form>
-                            <div class="uploaded-files" id="bab-uploaded-files">
-                                <!-- سيتم ملؤها بالملفات المرفوعة -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="add-bank">
-                        <input type="text" id="new-bank-name" placeholder="اسم البنك الجديد">
-                        <button onclick="addNewBank()" class="btn">
-                            <i class="fas fa-plus"></i> إضافة بنك جديد
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- باقي التقارير المشتركة -->
-                <div class="upload-section">
-                    <h2><i class="fas fa-ticket-alt"></i> تقرير مبيعات التذاكر - GDS Daily Report</h2>
-                    <form class="upload-form" id="gds-form">
-                        <div class="form-group">
-                            <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                            <div class="file-input-wrapper">
-                                <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                            </div>
-                            <div id="gds-file-info" class="file-info" style="display:none;">
-                                <i class="fas fa-file-excel"></i>
-                                <span class="file-name"></span>
-                                <span class="file-size"></span>
-                                <span class="file-status">جاهز للرفع</span>
-                            </div>
-                            <div class="upload-progress" id="gds-upload-progress">
-                                <div>جاري الرفع...</div>
-                                <div class="progress-bar">
-                                    <div class="progress" id="gds-progress-bar"></div>
-                                </div>
-                            </div>
-                            <button type="button" onclick="uploadFile('gds-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع الملف
-                            </button>
-                        </div>
-                    </form>
-                    <div class="uploaded-files" id="gds-uploaded-files">
-                        <!-- سيتم ملؤها بالملفات المرفوعة -->
-                    </div>
-                </div>
-                
-                <div class="upload-section">
-                    <h2><i class="fas fa-hotel"></i> تقرير مبيعات اكسبيديا - Expedia Daily Report</h2>
-                    <form class="upload-form" id="expedia-form">
-                        <div class="form-group">
-                            <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                            <div class="file-input-wrapper">
-                                <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                            </div>
-                            <div id="expedia-file-info" class="file-info" style="display:none;">
-                                <i class="fas fa-file-excel"></i>
-                                <span class="file-name"></span>
-                                <span class="file-size"></span>
-                                <span class="file-status">جاهز للرفع</span>
-                            </div>
-                            <div class="upload-progress" id="expedia-upload-progress">
-                                <div>جاري الرفع...</div>
-                                <div class="progress-bar">
-                                    <div class="progress" id="expedia-progress-bar"></div>
-                                </div>
-                            </div>
-                            <button type="button" onclick="uploadFile('expedia-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع الملف
-                            </button>
-                        </div>
-                    </form>
-                    <div class="uploaded-files" id="expedia-uploaded-files">
-                        <!-- سيتم ملؤها بالملفات المرفوعة -->
-                    </div>
-                </div>
-                
-                <div class="upload-section">
-                    <h2><i class="fas fa-plane"></i> تقرير مبيعات TBO طيران - TBO Flight Daily Report</h2>
-                    <form class="upload-form" id="tbo-flight-form">
-                        <div class="form-group">
-                            <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                            <div class="file-input-wrapper">
-                                <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                            </div>
-                            <div id="tbo-flight-file-info" class="file-info" style="display:none;">
-                                <i class="fas fa-file-excel"></i>
-                                <span class="file-name"></span>
-                                <span class="file-size"></span>
-                                <span class="file-status">جاهز للرفع</span>
-                            </div>
-                            <div class="upload-progress" id="tbo-flight-upload-progress">
-                                <div>جاري الرفع...</div>
-                                <div class="progress-bar">
-                                    <div class="progress" id="tbo-flight-progress-bar"></div>
-                                </div>
-                            </div>
-                            <button type="button" onclick="uploadFile('tbo-flight-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع الملف
-                            </button>
-                        </div>
-                    </form>
-                    <div class="uploaded-files" id="tbo-flight-uploaded-files">
-                        <!-- سيتم ملؤها بالملفات المرفوعة -->
-                    </div>
-                </div>
-                
-                <div class="upload-section">
-                    <h2><i class="fas fa-bed"></i> تقرير مبيعات TBO فنادق - TBO Hotel Daily Report</h2>
-                    <form class="upload-form" id="tbo-hotel-form">
-                        <div class="form-group">
-                            <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
-                            <div class="file-input-wrapper">
-                                <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
-                            </div>
-                            <div id="tbo-hotel-file-info" class="file-info" style="display:none;">
-                                <i class="fas fa-file-excel"></i>
-                                <span class="file-name"></span>
-                                <span class="file-size"></span>
-                                <span class="file-status">جاهز للرفع</span>
-                            </div>
-                            <div class="upload-progress" id="tbo-hotel-upload-progress">
-                                <div>جاري الرفع...</div>
-                                <div class="progress-bar">
-                                    <div class="progress" id="tbo-hotel-progress-bar"></div>
-                                </div>
-                            </div>
-                            <button type="button" onclick="uploadFile('tbo-hotel-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع الملف
-                            </button>
-                        </div>
-                    </form>
-                    <div class="uploaded-files" id="tbo-hotel-uploaded-files">
-                        <!-- سيتم ملؤها بالملفات المرفوعة -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- صفحة المقارنة -->
-            <div id="comparison-page" style="display:none;">
+            <!-- صفحة المقارنة والملفات -->
+            <div id="comparison-page">
                 <div class="comparison-header">
-                    <h1><i class="fas fa-exchange-alt"></i> صفحة المقارنة</h1>
+                    <h1><i class="fas fa-exchange-alt"></i> المقارنة والملفات</h1>
                     <div>
                         <button onclick="refreshComparison()" class="btn-refresh">
-                            <i class="fas fa-sync-alt"></i> تحديث المقارنة
+                            <i class="fas fa-sync-alt"></i> تحديث
                         </button>
                         <button onclick="clearComparison()" class="btn-clear">
                             <i class="fas fa-trash"></i> مسح
@@ -1002,22 +775,11 @@
                     </div>
                 </div>
                 
-                <div class="date-range">
-                    <div class="date-range-group">
-                        <label for="from-date">من تاريخ:</label>
-                        <input type="date" id="from-date">
-                    </div>
-                    <div class="date-range-group">
-                        <label for="to-date">إلى تاريخ:</label>
-                        <input type="date" id="to-date">
-                    </div>
-                    <button onclick="filterByDate()" class="btn">
-                        <i class="fas fa-filter"></i> تصفية
-                    </button>
-                </div>
-                
                 <div class="comparison-tabs">
-                    <div class="comparison-tab active" data-tab="flights">
+                    <div class="comparison-tab active" data-tab="files">
+                        <i class="fas fa-file-upload"></i> الملفات
+                    </div>
+                    <div class="comparison-tab" data-tab="flights">
                         <i class="fas fa-plane"></i> التذاكر
                     </div>
                     <div class="comparison-tab" data-tab="hotels">
@@ -1025,8 +787,244 @@
                     </div>
                 </div>
                 
+                <!-- قسم الملفات -->
+                <div id="files-comparison" class="comparison-content active">
+                    <!-- قسم البنوك -->
+                    <div class="upload-section">
+                        <h2><i class="fas fa-university"></i> تقرير المبيعات اليومية - Admin Daily Report</h2>
+                        
+                        <div id="banks-container">
+                            <!-- بنك BAJ -->
+                            <div class="bank-section" data-bank="BAJ">
+                                <div class="bank-header">
+                                    <input type="text" value="BAJ" class="bank-name">
+                                    <div class="bank-actions">
+                                        <button class="btn-edit" onclick="updateBankName(this)">
+                                            <i class="fas fa-edit"></i> تعديل
+                                        </button>
+                                        <button class="btn-delete" onclick="deleteBank(this)">
+                                            <i class="fas fa-trash"></i> حذف
+                                        </button>
+                                    </div>
+                                </div>
+                                <form class="upload-form" id="admin-baj-form">
+                                    <input type="hidden" name="bank" value="BAJ">
+                                    <div class="form-group">
+                                        <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
+                                        <div class="file-input-wrapper">
+                                            <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
+                                            <button type="button" onclick="uploadFile('admin-baj-form')" class="btn-success">
+                                                <i class="fas fa-upload"></i> رفع
+                                            </button>
+                                        </div>
+                                        <div id="baj-file-info" class="file-info" style="display:none;">
+                                            <i class="fas fa-file-excel"></i>
+                                            <span class="file-name"></span>
+                                            <span class="file-size"></span>
+                                            <span class="file-status">جاهز للرفع</span>
+                                        </div>
+                                        <div class="upload-progress" id="baj-upload-progress">
+                                            <div>جاري الرفع...</div>
+                                            <div class="progress-bar">
+                                                <div class="progress" id="baj-progress-bar"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="uploaded-files" id="baj-uploaded-files">
+                                    <!-- سيتم ملؤها بالملفات المرفوعة -->
+                                </div>
+                            </div>
+                            
+                            <!-- بنك BAB -->
+                            <div class="bank-section" data-bank="BAB">
+                                <div class="bank-header">
+                                    <input type="text" value="BAB" class="bank-name">
+                                    <div class="bank-actions">
+                                        <button class="btn-edit" onclick="updateBankName(this)">
+                                            <i class="fas fa-edit"></i> تعديل
+                                        </button>
+                                        <button class="btn-delete" onclick="deleteBank(this)">
+                                            <i class="fas fa-trash"></i> حذف
+                                        </button>
+                                    </div>
+                                </div>
+                                <form class="upload-form" id="admin-bab-form">
+                                    <input type="hidden" name="bank" value="BAB">
+                                    <div class="form-group">
+                                        <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
+                                        <div class="file-input-wrapper">
+                                            <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
+                                            <button type="button" onclick="uploadFile('admin-bab-form')" class="btn-success">
+                                                <i class="fas fa-upload"></i> رفع
+                                            </button>
+                                        </div>
+                                        <div id="bab-file-info" class="file-info" style="display:none;">
+                                            <i class="fas fa-file-excel"></i>
+                                            <span class="file-name"></span>
+                                            <span class="file-size"></span>
+                                            <span class="file-status">جاهز للرفع</span>
+                                        </div>
+                                        <div class="upload-progress" id="bab-upload-progress">
+                                            <div>جاري الرفع...</div>
+                                            <div class="progress-bar">
+                                                <div class="progress" id="bab-progress-bar"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="uploaded-files" id="bab-uploaded-files">
+                                    <!-- سيتم ملؤها بالملفات المرفوعة -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="add-bank">
+                            <input type="text" id="new-bank-name" placeholder="اسم البنك الجديد">
+                            <button onclick="addNewBank()" class="btn">
+                                <i class="fas fa-plus"></i> إضافة بنك جديد
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- باقي التقارير المشتركة -->
+                    <div class="upload-section">
+                        <h2><i class="fas fa-ticket-alt"></i> تقرير مبيعات التذاكر - GDS Daily Report</h2>
+                        <form class="upload-form" id="gds-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
+                                    <button type="button" onclick="uploadFile('gds-form')" class="btn-success">
+                                        <i class="fas fa-upload"></i> رفع
+                                    </button>
+                                </div>
+                                <div id="gds-file-info" class="file-info" style="display:none;">
+                                    <i class="fas fa-file-excel"></i>
+                                    <span class="file-name"></span>
+                                    <span class="file-size"></span>
+                                    <span class="file-status">جاهز للرفع</span>
+                                </div>
+                                <div class="upload-progress" id="gds-upload-progress">
+                                    <div>جاري الرفع...</div>
+                                    <div class="progress-bar">
+                                        <div class="progress" id="gds-progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="uploaded-files" id="gds-uploaded-files">
+                            <!-- سيتم ملؤها بالملفات المرفوعة -->
+                        </div>
+                    </div>
+                    
+                    <div class="upload-section">
+                        <h2><i class="fas fa-hotel"></i> تقرير مبيعات اكسبيديا - Expedia Daily Report</h2>
+                        <form class="upload-form" id="expedia-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
+                                    <button type="button" onclick="uploadFile('expedia-form')" class="btn-success">
+                                        <i class="fas fa-upload"></i> رفع
+                                    </button>
+                                </div>
+                                <div id="expedia-file-info" class="file-info" style="display:none;">
+                                    <i class="fas fa-file-excel"></i>
+                                    <span class="file-name"></span>
+                                    <span class="file-size"></span>
+                                    <span class="file-status">جاهز للرفع</span>
+                                </div>
+                                <div class="upload-progress" id="expedia-upload-progress">
+                                    <div>جاري الرفع...</div>
+                                    <div class="progress-bar">
+                                        <div class="progress" id="expedia-progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="uploaded-files" id="expedia-uploaded-files">
+                            <!-- سيتم ملؤها بالملفات المرفوعة -->
+                        </div>
+                    </div>
+                    
+                    <div class="upload-section">
+                        <h2><i class="fas fa-plane"></i> تقرير مبيعات TBO طيران - TBO Flight Daily Report</h2>
+                        <form class="upload-form" id="tbo-flight-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
+                                    <button type="button" onclick="uploadFile('tbo-flight-form')" class="btn-success">
+                                        <i class="fas fa-upload"></i> رفع
+                                    </button>
+                                </div>
+                                <div id="tbo-flight-file-info" class="file-info" style="display:none;">
+                                    <i class="fas fa-file-excel"></i>
+                                    <span class="file-name"></span>
+                                    <span class="file-size"></span>
+                                    <span class="file-status">جاهز للرفع</span>
+                                </div>
+                                <div class="upload-progress" id="tbo-flight-upload-progress">
+                                    <div>جاري الرفع...</div>
+                                    <div class="progress-bar">
+                                        <div class="progress" id="tbo-flight-progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="uploaded-files" id="tbo-flight-uploaded-files">
+                            <!-- سيتم ملؤها بالملفات المرفوعة -->
+                        </div>
+                    </div>
+                    
+                    <div class="upload-section">
+                        <h2><i class="fas fa-bed"></i> تقرير مبيعات TBO فنادق - TBO Hotel Daily Report</h2>
+                        <form class="upload-form" id="tbo-hotel-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
+                                    <button type="button" onclick="uploadFile('tbo-hotel-form')" class="btn-success">
+                                        <i class="fas fa-upload"></i> رفع
+                                    </button>
+                                </div>
+                                <div id="tbo-hotel-file-info" class="file-info" style="display:none;">
+                                    <i class="fas fa-file-excel"></i>
+                                    <span class="file-name"></span>
+                                    <span class="file-size"></span>
+                                    <span class="file-status">جاهز للرفع</span>
+                                </div>
+                                <div class="upload-progress" id="tbo-hotel-upload-progress">
+                                    <div>جاري الرفع...</div>
+                                    <div class="progress-bar">
+                                        <div class="progress" id="tbo-hotel-progress-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="uploaded-files" id="tbo-hotel-uploaded-files">
+                            <!-- سيتم ملؤها بالملفات المرفوعة -->
+                        </div>
+                    </div>
+                </div>
+
                 <!-- مقارنة التذاكر -->
-                <div id="flights-comparison" class="comparison-content active">
+                <div id="flights-comparison" class="comparison-content">
+                    <div class="date-range">
+                        <div class="date-range-group">
+                            <label for="from-date">من تاريخ:</label>
+                            <input type="date" id="from-date">
+                        </div>
+                        <div class="date-range-group">
+                            <label for="to-date">إلى تاريخ:</label>
+                            <input type="date" id="to-date">
+                        </div>
+                        <button onclick="filterByDate()" class="btn">
+                            <i class="fas fa-filter"></i> تصفية
+                        </button>
+                    </div>
+                    
                     <!-- BAJ Bank -->
                     <div class="section-title">
                         <i class="fas fa-university"></i> BAJ - تقرير المبيعات اليومية
@@ -1090,6 +1088,20 @@
                 
                 <!-- مقارنة الفنادق -->
                 <div id="hotels-comparison" class="comparison-content">
+                    <div class="date-range">
+                        <div class="date-range-group">
+                            <label for="from-date">من تاريخ:</label>
+                            <input type="date" id="from-date">
+                        </div>
+                        <div class="date-range-group">
+                            <label for="to-date">إلى تاريخ:</label>
+                            <input type="date" id="to-date">
+                        </div>
+                        <button onclick="filterByDate()" class="btn">
+                            <i class="fas fa-filter"></i> تصفية
+                        </button>
+                    </div>
+                    
                     <!-- BAJ Bank -->
                     <div class="section-title">
                         <i class="fas fa-university"></i> BAJ - تقرير المبيعات اليومية
@@ -1235,7 +1247,6 @@
 
         // عرض الصفحة المطلوبة
         function showPage(pageId) {
-            document.getElementById('files-page').style.display = 'none';
             document.getElementById('comparison-page').style.display = 'none';
             document.getElementById('database-page').style.display = 'none';
             document.getElementById(pageId).style.display = 'block';
@@ -1246,9 +1257,9 @@
             });
             document.getElementById(`${pageId.replace('-page', '-link')}`).classList.add('active');
             
-            // إذا كانت صفحة المقارنة، عرض تبويب التذاكر افتراضيًا
+            // إذا كانت صفحة المقارنة، عرض تبويب الملفات افتراضيًا
             if (pageId === 'comparison-page') {
-                showComparisonTab('flights');
+                showComparisonTab('files');
                 loadComparisonData();
             }
             
@@ -1260,8 +1271,9 @@
 
         // عرض تبويب المقارنة المطلوب
         function showComparisonTab(tabId) {
+            document.getElementById('files-comparison').classList.remove('active');
             document.getElementById('flights-comparison').classList.remove('active');
-            document.getElementById('hotels-comparison').classList.remove('active');
+            document.getElementById('hotels-comparison').classlist.remove('active');
             document.getElementById(`${tabId}-comparison`).classList.add('active');
             
             // تحديث التبويبات النشطة
@@ -1326,7 +1338,7 @@
             
             // إعادة تمكين الزر
             submitButton.disabled = false;
-            submitButton.innerHTML = '<i class="fas fa-upload"></i> رفع الملف';
+            submitButton.innerHTML = '<i class="fas fa-upload"></i> رفع';
             
             // إخفاء شريط التقدم
             uploadProgressDiv.style.display = 'none';
@@ -1927,6 +1939,9 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
+                                <button type="button" onclick="uploadFile('admin-${newBankId}-form')" class="btn-success">
+                                    <i class="fas fa-upload"></i> رفع
+                                </button>
                             </div>
                             <div id="admin-${newBankId}-form-file-info" class="file-info" style="display:none;">
                                 <i class="fas fa-file-excel"></i>
@@ -1940,9 +1955,6 @@
                                     <div class="progress" id="admin-${newBankId}-form-progress-bar"></div>
                                 </div>
                             </div>
-                            <button type="button" onclick="uploadFile('admin-${newBankId}-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع الملف
-                            </button>
                         </div>
                     </form>
                     <div class="uploaded-files" id="admin-${newBankId}-form-uploaded-files">
@@ -2023,11 +2035,6 @@
         }
 
         // إعداد معالج الأحداث للروابط
-        document.getElementById('files-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            showPage('files-page');
-        });
-
         document.getElementById('comparison-link').addEventListener('click', function(e) {
             e.preventDefault();
             showPage('comparison-page');
@@ -2045,9 +2052,9 @@
             });
         });
 
-        // عرض صفحة الملفات افتراضياً عند التحميل
+        // عرض صفحة المقارنة افتراضياً عند التحميل
         window.onload = function() {
-            showPage('files-page');
+            showPage('comparison-page');
             
             // تعيين التاريخ الافتراضي (اليوم)
             const today = new Date().toISOString().split('T')[0];
@@ -2108,6 +2115,9 @@
                             <label><i class="fas fa-file-excel"></i> رفع ملف Excel:</label>
                             <div class="file-input-wrapper">
                                 <input type="file" name="file" accept=".xlsx, .xls" required onchange="showFileInfo(this)">
+                                <button type="button" onclick="uploadFile('admin-${newBankId}-form')" class="btn-success">
+                                    <i class="fas fa-upload"></i> رفع
+                                </button>
                             </div>
                             <div id="admin-${newBankId}-form-file-info" class="file-info" style="display:none;">
                                 <i class="fas fa-file-excel"></i>
@@ -2121,9 +2131,6 @@
                                     <div class="progress" id="admin-${newBankId}-form-progress-bar"></div>
                                 </div>
                             </div>
-                            <button type="button" onclick="uploadFile('admin-${newBankId}-form')" class="btn-success">
-                                <i class="fas fa-upload"></i> رفع الملف
-                            </button>
                         </div>
                     </form>
                     <div class="uploaded-files" id="admin-${newBankId}-form-uploaded-files">
