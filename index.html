@@ -49,6 +49,7 @@
             padding: 30px;
             background-color: #fff;
             overflow-y: auto;
+            position: relative;
         }
         
         .logo {
@@ -490,30 +491,46 @@
         }
         
         /* رسائل التنبيه */
+        .alert-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
+            width: 100%;
+        }
+        
         .alert {
             padding: 15px;
             border-radius: 6px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
         
         .alert-success {
-            background-color: rgba(39, 174, 96, 0.1);
+            background-color: rgba(39, 174, 96, 0.9);
             border-left: 4px solid var(--success-color);
-            color: var(--success-color);
+            color: white;
         }
         
         .alert-warning {
-            background-color: rgba(243, 156, 18, 0.1);
+            background-color: rgba(243, 156, 18, 0.9);
             border-left: 4px solid var(--warning-color);
-            color: var(--warning-color);
+            color: white;
         }
         
         .alert-danger {
-            background-color: rgba(231, 76, 60, 0.1);
+            background-color: rgba(231, 76, 60, 0.9);
             border-left: 4px solid var(--danger-color);
-            color: var(--danger-color);
+            color: white;
         }
         
         .alert i {
@@ -699,6 +716,12 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
+            
+            .alert-container {
+                top: 10px;
+                right: 10px;
+                max-width: calc(100% - 20px);
+            }
         }
         
         @media (max-width: 768px) {
@@ -754,6 +777,9 @@
     </style>
 </head>
 <body>
+    <!-- حاوية رسائل التنبيه -->
+    <div class="alert-container" id="alert-container"></div>
+    
     <div class="container">
         <!-- القائمة الجانبية -->
         <div class="sidebar">
@@ -1417,18 +1443,21 @@
 
         // عرض تبويب المقارنة المطلوب
         function showComparisonTab(tabId) {
-            document.getElementById('files-comparison').classclassList.remove('active');
-            document.getElementById('flights-comparison').classList.remove('active');
-            document.getElementById('hotels-comparison').classList.remove('active');
-            document.getElementById(`${tabId}-comparison`).classList.add('active');
+            document.querySelectorAll('.comparison-content').forEach(content => {
+                content.classList.remove('active');
+            });
             
-            // تحديث التبويبات النشطة
             document.querySelectorAll('.comparison-tab').forEach(tab => {
                 tab.classList.remove('active');
-                if (tab.dataset.tab === tabId) {
-                    tab.classList.add('active');
-                }
             });
+            
+            document.getElementById(`${tabId}-comparison`).classList.add('active');
+            document.querySelector(`.comparison-tab[data-tab="${tabId}"]`).classList.add('active');
+            
+            // تحميل البيانات عند تغيير التبويب
+            if (tabId === 'flights' || tabId === 'hotels') {
+                loadComparisonData();
+            }
         }
 
         // معالجة إرسال النماذج
@@ -1597,7 +1626,7 @@
             sampleFlightsData = [
                 {
                     bookingRef: "REF" + Math.floor(1000 + Math.random() * 9000),
-                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10)),
+                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10),
                     redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
                     supplier: ["Emirates", "Qatar", "Etihad", "Saudia"][Math.floor(Math.random() * 4)],
                     flightPNR: "ABC" + Math.floor(100 + Math.random() * 900),
@@ -1610,7 +1639,7 @@
                 },
                 {
                     bookingRef: "REF" + Math.floor(1000 + Math.random() * 9000),
-                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10)),
+                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10),
                     redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
                     supplier: ["Emirates", "Qatar", "Etihad", "Saudia"][Math.floor(Math.random() * 4)],
                     flightPNR: "XYZ" + Math.floor(100 + Math.random() * 900),
@@ -1626,7 +1655,7 @@
             sampleHotelsData = [
                 {
                     bookingRef: "HREF" + Math.floor(1000 + Math.random() * 9000),
-                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10)),
+                    bookingDate: "2023-10-" + (10 + Math.floor(Math.random() * 10),
                     redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
                     supplier: ["Hilton", "Marriott", "Sheraton", "Intercontinental"][Math.floor(Math.random() * 4)],
                     hotelItinerary: "HIT" + Math.floor(100 + Math.random() * 900),
@@ -1899,8 +1928,18 @@
                 });
             }
             
-            // في الواقع، هنا يجب إرسال البيانات إلى السيرفر لإنشاء ملف Excel
-            // ولكننا سنكتفي بعرض رسالة نجاح
+            // إنشاء ملف Excel وهمي للتنزيل
+            const csvContent = exportData.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'مقارنة_البيانات_' + new Date().toISOString().slice(0, 10) + '.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
             showAlert('تم تصدير بيانات المقارنة إلى ملف Excel بنجاح', 'success');
         }
 
@@ -2180,7 +2219,23 @@
                 return;
             }
             
-            // محاكاة التصدير إلى Excel
+            // إنشاء ملف Excel وهمي للتنزيل
+            let csvContent = "ID,النوع,البنك,Booking Ref,التاريخ,الحالة,تاريخ الحفظ\n";
+            
+            database.forEach(item => {
+                csvContent += `${item.id},${item.type},${item.bank},${item.bookingRef},${item.date},${item.status},${item.saveDate}\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'قاعدة_البيانات_' + new Date().toISOString().slice(0, 10) + '.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
             showAlert('تم تصدير البيانات إلى Excel بنجاح', 'success');
         }
 
@@ -2312,8 +2367,8 @@
                 <span>${message}</span>
             `;
             
-            const content = document.querySelector('.content');
-            content.insertBefore(alertDiv, content.firstChild);
+            const alertContainer = document.getElementById('alert-container');
+            alertContainer.appendChild(alertDiv);
             
             // إزالة الرسالة بعد 5 ثواني إذا لم تكن ثابتة
             if (!persistent) {
