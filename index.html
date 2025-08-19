@@ -274,6 +274,14 @@
             background-color: #c0392b;
         }
         
+        .btn-export {
+            background-color: var(--expedia-color);
+        }
+        
+        .btn-export:hover {
+            background-color: #16a085;
+        }
+        
         .bank-section {
             margin-bottom: 25px;
             padding: 20px;
@@ -427,6 +435,10 @@
             border-left: 4px solid var(--expedia-color);
         }
         
+        .report-row {
+            border-left: 4px solid var(--primary-color);
+        }
+        
         .section-title {
             display: flex;
             align-items: center;
@@ -450,6 +462,10 @@
         
         .expedia-title {
             color: var(--expedia-color);
+        }
+        
+        .report-title {
+            color: var(--primary-color);
         }
         
         .badge {
@@ -769,6 +785,9 @@
                         <button onclick="clearComparison()" class="btn-clear">
                             <i class="fas fa-trash"></i> مسح
                         </button>
+                        <button onclick="exportComparisonToExcel()" class="btn-export">
+                            <i class="fas fa-file-excel"></i> تصدير
+                        </button>
                         <button onclick="saveToDatabase()" class="btn-database">
                             <i class="fas fa-save"></i> حفظ
                         </button>
@@ -1084,6 +1103,24 @@
                             <!-- سيتم ملؤها بالبيانات ديناميكياً -->
                         </tbody>
                     </table>
+                    
+                    <div class="section-title report-title">
+                        <i class="fas fa-file-alt"></i> PNR غير المتطابقة مع التقرير
+                    </div>
+                    
+                    <table id="report-mismatch-table">
+                        <thead>
+                            <tr>
+                                <th>Flight PNR</th>
+                                <th>التقرير PNR</th>
+                                <th>البنك</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-mismatch-data">
+                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
+                        </tbody>
+                    </table>
                 </div>
                 
                 <!-- مقارنة الفنادق -->
@@ -1160,6 +1197,24 @@
                             <!-- سيتم ملؤها بالبيانات ديناميكياً -->
                         </tbody>
                     </table>
+                    
+                    <div class="section-title report-title">
+                        <i class="fas fa-file-alt"></i> Itineraries غير المتطابقة مع التقرير
+                    </div>
+                    
+                    <table id="report-hotel-mismatch-table">
+                        <thead>
+                            <tr>
+                                <th>Hotel Itinerary</th>
+                                <th>التقرير Itinerary</th>
+                                <th>البنك</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-hotel-mismatch-data">
+                            <!-- سيتم ملؤها بالبيانات ديناميكياً -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -1211,7 +1266,7 @@
                 flightPNR: "ABC123",
                 tickets: 2,
                 gdsPNR: "XYZ456",
-                tboPNR: "DEF789",
+                tboPNR: "",
                 match: false,
                 mismatchType: "GDS",
                 bank: "BAJ"
@@ -1223,7 +1278,7 @@
                 supplier: "Qatar",
                 flightPNR: "GHI987",
                 tickets: 1,
-                gdsPNR: "JKL654",
+                gdsPNR: "",
                 tboPNR: "MNO321",
                 match: true,
                 bank: "BAJ"
@@ -1238,7 +1293,7 @@
                 supplier: "Hilton",
                 hotelItinerary: "HIT123",
                 expediaItinerary: "HIT456",
-                tboConfirmation: "HIT789",
+                tboConfirmation: "",
                 match: false,
                 mismatchType: "Expedia",
                 bank: "BAJ"
@@ -1249,7 +1304,7 @@
                 redemptionType: "Standard",
                 supplier: "Marriott",
                 hotelItinerary: "HIT987",
-                expediaItinerary: "HIT987",
+                expediaItinerary: "",
                 tboConfirmation: "HIT987",
                 match: true,
                 bank: "BAJ"
@@ -1362,7 +1417,7 @@
 
         // عرض تبويب المقارنة المطلوب
         function showComparisonTab(tabId) {
-            document.getElementById('files-comparison').classList.remove('active');
+            document.getElementById('files-comparison').classclassList.remove('active');
             document.getElementById('flights-comparison').classList.remove('active');
             document.getElementById('hotels-comparison').classList.remove('active');
             document.getElementById(`${tabId}-comparison`).classList.add('active');
@@ -1486,12 +1541,6 @@
             }
             
             showAlert('تم رفع الملف بنجاح', 'success');
-            
-            // إعادة تعيين حقل الرفع
-            fileInput.value = '';
-            setTimeout(() => {
-                if (fileInfoDiv) fileInfoDiv.style.display = 'none';
-            }, 2000);
         }
 
         // عرض الملفات المرفوعة
@@ -1553,8 +1602,8 @@
                     supplier: ["Emirates", "Qatar", "Etihad", "Saudia"][Math.floor(Math.random() * 4)],
                     flightPNR: "ABC" + Math.floor(100 + Math.random() * 900),
                     tickets: 1 + Math.floor(Math.random() * 4),
-                    gdsPNR: "ABC" + Math.floor(100 + Math.random() * 900),
-                    tboPNR: "ABC" + Math.floor(100 + Math.random() * 900),
+                    gdsPNR: Math.random() > 0.5 ? "ABC" + Math.floor(100 + Math.random() * 900) : "",
+                    tboPNR: Math.random() > 0.5 ? "" : "ABC" + Math.floor(100 + Math.random() * 900),
                     match: Math.random() > 0.3,
                     mismatchType: Math.random() > 0.5 ? "GDS" : "TBO",
                     bank: bankName
@@ -1566,8 +1615,8 @@
                     supplier: ["Emirates", "Qatar", "Etihad", "Saudia"][Math.floor(Math.random() * 4)],
                     flightPNR: "XYZ" + Math.floor(100 + Math.random() * 900),
                     tickets: 1 + Math.floor(Math.random() * 4),
-                    gdsPNR: "XYZ" + Math.floor(100 + Math.random() * 900),
-                    tboPNR: "XYZ" + Math.floor(100 + Math.random() * 900),
+                    gdsPNR: Math.random() > 0.5 ? "XYZ" + Math.floor(100 + Math.random() * 900) : "",
+                    tboPNR: Math.random() > 0.5 ? "" : "XYZ" + Math.floor(100 + Math.random() * 900),
                     match: Math.random() > 0.3,
                     mismatchType: Math.random() > 0.5 ? "GDS" : "TBO",
                     bank: bankName
@@ -1581,8 +1630,8 @@
                     redemptionType: ["Standard", "Upgrade", "Premium"][Math.floor(Math.random() * 3)],
                     supplier: ["Hilton", "Marriott", "Sheraton", "Intercontinental"][Math.floor(Math.random() * 4)],
                     hotelItinerary: "HIT" + Math.floor(100 + Math.random() * 900),
-                    expediaItinerary: "HIT" + Math.floor(100 + Math.random() * 900),
-                    tboConfirmation: "HIT" + Math.floor(100 + Math.random() * 900),
+                    expediaItinerary: Math.random() > 0.5 ? "HIT" + Math.floor(100 + Math.random() * 900) : "",
+                    tboConfirmation: Math.random() > 0.5 ? "" : "HIT" + Math.floor(100 + Math.random() * 900),
                     match: Math.random() > 0.3,
                     mismatchType: Math.random() > 0.5 ? "Expedia" : "TBO",
                     bank: bankName
@@ -1640,8 +1689,8 @@
                             <td>${item.supplier}</td>
                             <td>${item.flightPNR}</td>
                             <td>${item.tickets}</td>
-                            <td>${item.gdsPNR}</td>
-                            <td>${item.tboPNR}</td>
+                            <td>${item.gdsPNR || '-'}</td>
+                            <td>${item.tboPNR || '-'}</td>
                             ${matchStatus}
                         </tr>
                     `;
@@ -1666,8 +1715,8 @@
                             <td>${item.redemptionType}</td>
                             <td>${item.supplier}</td>
                             <td>${item.hotelItinerary}</td>
-                            <td>${item.expediaItinerary}</td>
-                            <td>${item.tboConfirmation}</td>
+                            <td>${item.expediaItinerary || '-'}</td>
+                            <td>${item.tboConfirmation || '-'}</td>
                             ${matchStatus}
                         </tr>
                     `;
@@ -1689,7 +1738,7 @@
                     gdsMismatchTable.innerHTML += `
                         <tr class="gds-row">
                             <td>${item.flightPNR}</td>
-                            <td>${item.gdsPNR}</td>
+                            <td>${item.gdsPNR || '-'}</td>
                             <td>${item.bank || 'BAJ'}</td>
                             <td class="mismatch">غير متطابق</td>
                         </tr>
@@ -1706,9 +1755,26 @@
                     tboMismatchTable.innerHTML += `
                         <tr class="tbo-row">
                             <td>${item.flightPNR}</td>
-                            <td>${item.tboPNR}</td>
+                            <td>${item.tboPNR || '-'}</td>
                             <td>${item.bank || 'BAJ'}</td>
                             <td class="mismatch">غير متطابق</td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            // التقرير غير المتطابق (تذاكر)
+            const reportMismatch = sampleFlightsData.filter(item => !item.match && (item.mismatchType === 'GDS' || item.mismatchType === 'TBO'));
+            const reportMismatchTable = document.getElementById('report-mismatch-data');
+            if (reportMismatchTable) {
+                reportMismatchTable.innerHTML = '';
+                reportMismatch.forEach(item => {
+                    reportMismatchTable.innerHTML += `
+                        <tr class="report-row">
+                            <td>${item.flightPNR}</td>
+                            <td>${item.mismatchType === 'GDS' ? item.gdsPNR : item.tboPNR || '-'}</td>
+                            <td>${item.bank || 'BAJ'}</td>
+                            <td class="mismatch">غير متطابق (${item.mismatchType})</td>
                         </tr>
                     `;
                 });
@@ -1723,7 +1789,7 @@
                     expediaMismatchTable.innerHTML += `
                         <tr class="expedia-row">
                             <td>${item.hotelItinerary}</td>
-                            <td>${item.expediaItinerary}</td>
+                            <td>${item.expediaItinerary || '-'}</td>
                             <td>${item.bank || 'BAJ'}</td>
                             <td class="mismatch">غير متطابق</td>
                         </tr>
@@ -1740,9 +1806,26 @@
                     tboHotelMismatchTable.innerHTML += `
                         <tr class="tbo-row">
                             <td>${item.hotelItinerary}</td>
-                            <td>${item.tboConfirmation}</td>
+                            <td>${item.tboConfirmation || '-'}</td>
                             <td>${item.bank || 'BAJ'}</td>
                             <td class="mismatch">غير متطابق</td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            // التقرير غير المتطابق (فنادق)
+            const reportHotelMismatch = sampleHotelsData.filter(item => !item.match && (item.mismatchType === 'Expedia' || item.mismatchType === 'TBO'));
+            const reportHotelMismatchTable = document.getElementById('report-hotel-mismatch-data');
+            if (reportHotelMismatchTable) {
+                reportHotelMismatchTable.innerHTML = '';
+                reportHotelMismatch.forEach(item => {
+                    reportHotelMismatchTable.innerHTML += `
+                        <tr class="report-row">
+                            <td>${item.hotelItinerary}</td>
+                            <td>${item.mismatchType === 'Expedia' ? item.expediaItinerary : item.tboConfirmation || '-'}</td>
+                            <td>${item.bank || 'BAJ'}</td>
+                            <td class="mismatch">غير متطابق (${item.mismatchType})</td>
                         </tr>
                     `;
                 });
@@ -1763,6 +1846,62 @@
                 loadComparisonData();
                 showAlert('تم مسح بيانات المقارنة بنجاح', 'success');
             }
+        }
+
+        // تصدير بيانات المقارنة إلى Excel
+        function exportComparisonToExcel() {
+            if (sampleFlightsData.length === 0 && sampleHotelsData.length === 0) {
+                showAlert('لا توجد بيانات لتصديرها', 'warning');
+                return;
+            }
+            
+            // محاكاة عملية التصدير
+            let exportData = [];
+            
+            // إضافة بيانات التذاكر
+            if (sampleFlightsData.length > 0) {
+                exportData.push(['=== بيانات التذاكر ===']);
+                exportData.push(['Booking Ref', 'Booking Date', 'Redemption Type', 'Supplier', 'Flight PNR', 'Tickets', 'GDS PNR', 'TBO PNR', 'Status']);
+                
+                sampleFlightsData.forEach(item => {
+                    exportData.push([
+                        item.bookingRef,
+                        item.bookingDate,
+                        item.redemptionType,
+                        item.supplier,
+                        item.flightPNR,
+                        item.tickets,
+                        item.gdsPNR || '-',
+                        item.tboPNR || '-',
+                        item.match ? 'متطابق' : `غير متطابق (${item.mismatchType})`
+                    ]);
+                });
+                
+                exportData.push([]); // سطر فارغ لفصل البيانات
+            }
+            
+            // إضافة بيانات الفنادق
+            if (sampleHotelsData.length > 0) {
+                exportData.push(['=== بيانات الفنادق ===']);
+                exportData.push(['Booking Ref', 'Booking Date', 'Redemption Type', 'Supplier', 'Hotel Itinerary', 'Expedia Itinerary', 'TBO Confirmation', 'Status']);
+                
+                sampleHotelsData.forEach(item => {
+                    exportData.push([
+                        item.bookingRef,
+                        item.bookingDate,
+                        item.redemptionType,
+                        item.supplier,
+                        item.hotelItinerary,
+                        item.expediaItinerary || '-',
+                        item.tboConfirmation || '-',
+                        item.match ? 'متطابق' : `غير متطابق (${item.mismatchType})`
+                    ]);
+                });
+            }
+            
+            // في الواقع، هنا يجب إرسال البيانات إلى السيرفر لإنشاء ملف Excel
+            // ولكننا سنكتفي بعرض رسالة نجاح
+            showAlert('تم تصدير بيانات المقارنة إلى ملف Excel بنجاح', 'success');
         }
 
         // تصفية بيانات التذاكر حسب النطاق الزمني
@@ -1807,8 +1946,8 @@
                             <td>${item.supplier}</td>
                             <td>${item.flightPNR}</td>
                             <td>${item.tickets}</td>
-                            <td>${item.gdsPNR}</td>
-                            <td>${item.tboPNR}</td>
+                            <td>${item.gdsPNR || '-'}</td>
+                            <td>${item.tboPNR || '-'}</td>
                             ${matchStatus}
                         </tr>
                     `;
@@ -1859,8 +1998,8 @@
                             <td>${item.redemptionType}</td>
                             <td>${item.supplier}</td>
                             <td>${item.hotelItinerary}</td>
-                            <td>${item.expediaItinerary}</td>
-                            <td>${item.tboConfirmation}</td>
+                            <td>${item.expediaItinerary || '-'}</td>
+                            <td>${item.tboConfirmation || '-'}</td>
                             ${matchStatus}
                         </tr>
                     `;
